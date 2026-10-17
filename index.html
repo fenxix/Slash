@@ -277,11 +277,12 @@ const TAGS=['имя','нужно','нужно_строкой','телефон','
 const tpls=()=>S.tpls||(S.tpls=[]);
 const offerBtn=id=>`<button onclick="offerOpen('${id}')" class="mt-3 w-full min-h-[48px] rounded-xl bg-ac/15 text-act font-semibold flex items-center justify-center gap-2">${ic('message-circle','w-4 h-4')}Написать оффер</button>`;
 function offerText(c,text){
+  const tk=k=>{k=k.trim().toLowerCase().replace(/\s+/g,'_');return k==='название'?'имя':k},hv=k=>Object.prototype.hasOwnProperty.call(v,tk(k));
   const es=estimate(c),it=bl(c.needs),v={'имя':c.name,'нужно':it.map(x=>'• '+x).join('\n'),'нужно_строкой':it.join(', '),'телефон':c.tel||'','instagram':c.ig?ig(c.ig):'','сайт':c.web?url(c.web):'','цена':es?'≈ '+money(es.avg):'','я':S.profile.name};
   return text.split('\n').map(l=>{
-    const m=[...l.matchAll(/\{([^}]+)\}/g)].filter(x=>x[1] in v);
-    if(m.length&&m.every(x=>!v[x[1]]))return null;
-    return l.replace(/\{([^}]+)\}/g,(a,k)=>k in v?v[k]:a);
+    const m=[...l.matchAll(/\{([^}]+)\}/g)].filter(x=>hv(x[1]));
+    if(m.length&&m.every(x=>!v[tk(x[1])]))return null;
+    return l.replace(/\{([^}]+)\}/g,(a,k)=>hv(k)?v[tk(k)]:a);
   }).filter(l=>l!==null).join('\n').replace(/\n{3,}/g,'\n\n').trim();
 }
 function offerOpen(cid){
@@ -303,11 +304,11 @@ function tplEdit(tid,cid){
   modal(tid?'Изменить вариант':'Новый вариант',`<label class="text-sm text-mute">Название</label><input id="tp-n" class="${INP} mt-1 mb-3" placeholder="Например, приветствие" value="${esc(t.name)}">
     <label class="text-sm text-mute">Структура текста</label><textarea id="tp-t" rows="9" class="${INP} mt-1 resize-none" placeholder="Здравствуйте, {имя}! Увидел, что у вас пока нет сайта…">${esc(t.text)}</textarea>
     <p class="text-xs text-mute mt-2 mb-1.5">Нажми метку, она вставится в текст. Вместо неё подставятся данные клиента. Если данных нет, строка с этой меткой пропадёт.</p>
-    <div class="flex flex-wrap gap-2">${TAGS.map(k=>`<button onclick="tagIns('${k}')" class="min-h-[40px] px-3 rounded-full border border-line bg-bg text-sm">{${k}}</button>`).join('')}</div>
+    <div class="flex flex-wrap gap-2">${TAGS.map(k=>`<button onmousedown="event.preventDefault()" onclick="tagIns('${k}')" class="min-h-[40px] px-3 rounded-full border border-line bg-bg text-sm">{${k}}</button>`).join('')}</div>
     <div class="grid gap-2 mt-4"><button onclick="tplSave('${tid}','${cid}')" class="${BTN} !py-3">Сохранить</button>${tid?`<button onclick="tplDel('${tid}','${cid}')" class="min-h-[48px] rounded-2xl border border-bad/50 text-bad font-semibold">Удалить вариант</button>`:''}</div>`);
   if(!tid)setTimeout(()=>$('#tp-n')?.focus(),60);
 }
-function tagIns(k){const t=$('#tp-t');t.setRangeText('{'+k+'}',t.selectionStart,t.selectionEnd,'end')}
+function tagIns(k){const t=$('#tp-t');t.focus();t.setRangeText('{'+k+'}',t.selectionStart,t.selectionEnd,'end')}
 function tplSave(tid,cid){
   const n=$('#tp-n').value.trim(),x=$('#tp-t').value.trim();
   if(!n){$('#tp-n').focus();return}if(!x){$('#tp-t').focus();return}
