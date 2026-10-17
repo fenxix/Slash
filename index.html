@@ -52,9 +52,12 @@ button{transition:transform .12s,background .2s,border-color .2s}button:active{t
 <script>
 const $=s=>document.querySelector(s);
 const KEY='devhub.v1';
-let S={profile:null,tasks:[],clients:[],comps:[],notes:[],draft:'',cur:'',theme:'',pal:'',money:{free:30,items:[],inc:[]}};
+const blank=()=>({profile:null,tasks:[],clients:[],comps:[],notes:[],draft:'',cur:'',theme:'',pal:'',money:{free:30,items:[],inc:[]}});
+let S=blank();
+const ACCK='devhub.acc';let ACC=null,pt=0;try{ACC=JSON.parse(localStorage.getItem(ACCK)||'null')}catch(e){}
+const sync={st:ACC&&ACC.expired?'auth':'idle',busy:false};
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){};touch()};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Math.random().toString(36).slice(2,9);
 const url=u=>{u=(u||'').trim();return !u?'':/^https?:\/\//i.test(u)?u:'https://'+u};
@@ -97,7 +100,8 @@ function onboarding(){
     <p class="text-center text-2xl font-extrabold mt-5 tracking-tight">Слэш</p>
     <h1 class="text-3xl font-extrabold text-center mt-8 leading-tight">Сдавай вовремя.<br>Бери за работу честную цену.</h1>
     <p class="text-mute text-center mt-3 px-4">Дедлайны, файлы клиентов, цены конкурентов и случайные идеи в одном месте.</p></div>
-    <button onclick="step=1;render()" class="${BTN}">Настроить мой хаб</button>`;
+    <div class="grid gap-2"><button onclick="step=1;render()" class="${BTN}">Настроить мой хаб</button>
+    <button onclick="openAuth('login')" class="w-full min-h-[48px] rounded-2xl border border-line text-fg font-semibold">Войти в аккаунт</button></div>`;
   if(step===1)b=`<div class="flex-1 overflow-y-auto ns">
     <h2 class="text-2xl font-bold">Как ты работаешь?</h2><p class="text-mute mt-1 mb-5">Это настроит подсказки внутри приложения.</p>
     <label class="text-sm text-mute">Как тебя называть?</label>
@@ -127,7 +131,7 @@ const ico=x=>`<span class="flex items-center gap-3">${ic(IC[x]||'circle','w-5 h-
 const idb=new Promise(r=>{try{const q=indexedDB.open('slash',1);q.onupgradeneeded=()=>q.result.createObjectStore('f');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
 const dbx=async(m,k,v)=>{const d=await idb;if(!d)return;return new Promise(r=>{try{const s=d.transaction('f',m==='get'?'readonly':'readwrite').objectStore('f');const q=m==='get'?s.get(k):m==='put'?s.put(v,k):m==='clear'?s.clear():s.delete(k);q.onsuccess=()=>r(q.result);q.onerror=()=>r()}catch(e){r()}})};
 const U={};
-async function hydrate(){for(const el of document.querySelectorAll('img[data-att]')){const id=el.dataset.att;if(!U[id]){const b=await dbx('get',id);if(b)U[id]=URL.createObjectURL(b)}if(U[id])el.src=U[id]}}
+async function hydrate(){for(const el of document.querySelectorAll('img[data-att]')){const id=el.dataset.att;if(!U[id]){const b=await dbx('get',id);if(b)U[id]=URL.createObjectURL(b)}if(U[id])el.src=U[id];else{el.removeAttribute('src');el.parentElement.classList.add('opacity-40');el.parentElement.title='Файл хранится на другом устройстве'}}}
 
 const p2=n=>String(n).padStart(2,'0');
 function fmt(ms){const o=ms<0;ms=Math.abs(ms);const s=Math.floor(ms/1e3),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60;
@@ -214,7 +218,7 @@ async function pickFiles(cid,kind,acc){
   i.click();
 }
 async function viewAtt(cid,aid){
-  const a=S.clients.find(x=>x.id===cid).att.find(x=>x.id===aid),b=await dbx('get',aid);if(!b)return;
+  const a=S.clients.find(x=>x.id===cid).att.find(x=>x.id===aid),b=await dbx('get',aid);if(!b){alert('Этот файл лежит на другом устройстве. Файлы клиентов не уходят в облако.');return}
   const u=U[aid]||(U[aid]=URL.createObjectURL(b));
   modal(esc(a.name),`${a.type.startsWith('image/')?`<img src="${u}" alt="" class="w-full rounded-xl mb-4 max-h-[55vh] object-contain bg-bg">`:`<div class="py-10 text-center text-mute">${ic('file-text','w-12 h-12 mx-auto')}</div>`}
     <div class="grid grid-cols-2 gap-2"><a href="${u}" download="${esc(a.name)}" class="min-h-[48px] rounded-2xl bg-ac text-acfg font-bold flex items-center justify-center gap-2">${ic('download','w-4 h-4')}Скачать</a>
@@ -448,6 +452,7 @@ function openSettings(){
   const st=[['Выполнено',S.tasks.filter(t=>t.done).length,'check-circle-2'],['Клиентов',S.clients.length,'users'],['Записей',S.notes.length,'lightbulb']];
   modal('Настройки',`<div class="rounded-2xl bg-bg border border-line p-3 mb-3 flex items-center gap-3">${logo(44)}<div class="min-w-0"><p class="font-bold truncate">${esc(S.profile.name)}</p><p class="text-xs text-mute">Слэш, хаб веб-разработчика</p></div></div>
     <div class="grid grid-cols-3 gap-2 mb-5">${st.map(([l,v,i])=>`<div class="rounded-2xl bg-bg border border-line p-3">${ic(i,'w-4 h-4 text-act mb-1')}<p class="mono text-xl font-bold">${v}</p><p class="text-xs text-mute">${l}</p></div>`).join('')}</div>
+    ${acctBlock()}
     <div id="lk">${look()}</div>
     <label class="text-sm text-mute block mt-5">Знак валюты для цен</label>
     <input class="${INP} mt-1" placeholder="например, ₽, ₸, $" value="${esc(S.cur)}" oninput="S.cur=this.value;save()" onchange="render()">
@@ -469,11 +474,128 @@ function shell(){
   const view={tasks:tasksView,clients:clientsView,market:marketView,money:moneyView,notes:notesView}[tab]();
   return `<div class="h-full max-w-md mx-auto flex flex-col bg-bg text-fg md:border-x md:border-line">
     <header class="px-5 pt-5 pb-3 flex items-center gap-3">${logo(40)}<div class="min-w-0 flex-1"><p class="text-sm text-mute truncate">${g}, ${esc(S.profile.name)}</p><h1 class="text-2xl font-extrabold leading-tight truncate">${titles[tab]}</h1></div>
-    <button aria-label="Настройки" onclick="openSettings()" class="w-11 h-11 shrink-0 rounded-xl bg-card border border-line text-mute flex items-center justify-center">${ic('settings','w-5 h-5')}</button></header>
+    <button aria-label="Настройки" onclick="openSettings()" class="relative w-11 h-11 shrink-0 rounded-xl bg-card border border-line text-mute flex items-center justify-center">${ic('settings','w-5 h-5')}<span id="gd" class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-warn ${ACC&&(sync.st==='err'||sync.st==='auth')?'':'hidden'}"></span></button></header>
     <main id="main" class="flex-1 overflow-y-auto ns px-4 pb-12">${view}</main>${nav()}</div>`;
 }
-function resetApp(){if(confirm('Стереть все данные и пройти настройку заново?')){const{theme,pal,cur}=S;S={profile:null,tasks:[],clients:[],comps:[],notes:[],draft:'',cur,theme,pal,money:{free:30,items:[],inc:[]}};$('#sheet')?.remove();draft={name:'',peak:'',style:'',traits:[]};step=0;tab='tasks';dbx('clear');save();render()}}
-function render(){const sc=$('#main')?.scrollTop||0;$('#app').innerHTML=S.profile?shell():onboarding();paint();hydrate();if($('#main'))$('#main').scrollTop=sc}
+function resetApp(){if(confirm(ACC?'Стереть все данные, в том числе в облаке аккаунта @'+ACC.nick+'? Это нельзя отменить.':'Стереть все данные и пройти настройку заново?')){const{theme,pal,cur}=S;S={profile:null,tasks:[],clients:[],comps:[],notes:[],draft:'',cur,theme,pal,money:{free:30,items:[],inc:[]}};$('#sheet')?.remove();draft={name:'',peak:'',style:'',traits:[]};step=0;tab='tasks';dbx('clear');save();render()}}
+function render(){const sc=$('#main')?.scrollTop||0;$('#app').innerHTML=showAuth?authScreen():S.profile?shell():onboarding();paint();hydrate();if($('#main'))$('#main').scrollTop=sc}
+
+/* ---------- Аккаунт и облако (Supabase) ---------- */
+/* Вход по нику и паролю идёт через функции в базе (slash_register, slash_login, slash_load, slash_save).
+   К таблицам напрямую доступа нет, пароль хранится в виде bcrypt-хеша, токен входа живёт 90 дней. */
+const SB_URL='https://tqlaprnwvgkscjqmiqcm.supabase.co',SB_KEY='sb_publishable_RWdQ78XFVwpdxgoAqfvFHQ_nau_0GND';
+const rpc=async(fn,args)=>{let r;try{r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify(args)})}catch(e){throw 'network'}
+  if(!r.ok)throw 'network';return r.json()};
+const saveAcc=()=>{try{ACC?localStorage.setItem(ACCK,JSON.stringify(ACC)):localStorage.removeItem(ACCK)}catch(e){}};
+const AERR={bad_nick:'Ник: 3–24 символа, буквы (можно русские), цифры, _ . -',bad_pass:'Пароль: минимум 6 символов',nick_taken:'Этот ник уже занят',bad_login:'Неверный ник или пароль',locked:'Слишком много попыток. Подожди 5 минут',too_big:'Слишком много данных для облака',network:'Нет связи с сервером. Проверь интернет'};
+function syncTxt(){
+  if(!ACC)return'';
+  const t={busy:['Синхронизация…','text-mute'],ok:['Сохранено в облаке','text-ok'],err:['Не удалось сохранить. Повторю, когда появится связь','text-warn'],auth:['Сессия истекла. Войди снова, и данные сохранятся','text-bad'],idle:[ACC.dirty?'Есть несохранённые изменения':'Подключено','text-mute']}[sync.st]||['',''];
+  return `<span class="${t[1]}">${t[0]}</span>`;
+}
+function setSt(st){sync.st=st;syncUI()}
+function syncUI(){const e=$('#sy');if(e)e.innerHTML=syncTxt();const g=$('#gd');if(g)g.classList.toggle('hidden',!(ACC&&(sync.st==='err'||sync.st==='auth')))}
+function touch(){if(!ACC||ACC.expired)return;ACC.dirty=true;saveAcc();clearTimeout(pt);pt=setTimeout(push,1500)}
+function applyRemote(d){
+  S=Object.assign(blank(),d);S.money=Object.assign({free:30,items:[],inc:[]},S.money);
+  if(!S.theme)S.theme=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';if(!S.pal)S.pal='purple';
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}applyLook();
+}
+async function push(){
+  const a=ACC;if(!a||a.expired)return;
+  if(sync.busy){a.dirty=true;return}
+  sync.busy=true;setSt('busy');a.dirty=false;saveAcc();
+  try{
+    const r=await rpc('slash_save',{p_token:a.token,p_data:S});
+    if(ACC!==a)return;
+    if(r.error==='auth'){a.expired=true;a.dirty=true;saveAcc();setSt('auth')}
+    else if(r.error){a.dirty=true;saveAcc();setSt('err')}
+    else{a.ver=r.updated_at;saveAcc();setSt(a.dirty?'idle':'ok')}
+  }catch(e){if(ACC===a){a.dirty=true;saveAcc();setSt('err')}}
+  finally{sync.busy=false}
+  if(ACC===a&&a.dirty&&!a.expired&&sync.st!=='err'){clearTimeout(pt);pt=setTimeout(push,800)}
+}
+async function pull(force){
+  const a=ACC;if(!a||a.expired||sync.busy)return;
+  if(a.dirty&&!force)return push();
+  sync.busy=true;setSt('busy');
+  try{
+    const r=await rpc('slash_load',{p_token:a.token});
+    if(ACC!==a)return;
+    if(r.error==='auth'){a.expired=true;saveAcc();setSt('auth')}
+    else{
+      if(r.updated_at!==a.ver&&r.data&&Object.keys(r.data).length&&!a.dirty){applyRemote(r.data);render()}
+      a.ver=r.updated_at;saveAcc();setSt('ok');
+    }
+  }catch(e){if(ACC===a)setSt('err')}
+  finally{sync.busy=false}
+  if(ACC===a&&a.dirty&&!a.expired&&sync.st!=='err'){clearTimeout(pt);pt=setTimeout(push,800)}
+}
+const syncNow=()=>ACC&&(ACC.dirty?push():pull(true));
+
+let showAuth=false,au={mode:'login',nick:'',pass:'',err:'',busy:false};
+function openAuth(mode){$('#sheet')?.remove();au={mode,nick:ACC&&ACC.expired?ACC.nick:'',pass:'',err:'',busy:false};showAuth=true;render();setTimeout(()=>$(au.nick?'#a-pass':'#a-nick')?.focus(),50)}
+function closeAuth(){showAuth=false;au.pass='';render()}
+function authScreen(){
+  const reg=au.mode==='reg';
+  return `<div class="h-full max-w-md mx-auto flex flex-col px-6 pt-6 pb-6 gap-4 bg-bg text-fg overflow-y-auto ns">
+    <button onclick="closeAuth()" class="self-start min-h-[44px] -ml-2 px-2 text-mute flex items-center gap-1">← Назад</button>
+    <div class="flex-1 flex flex-col justify-center">
+      <div class="mx-auto rounded-[22px] shadow-[0_0_60px_-12px_rgb(var(--ac)/.9)]">${logo(88)}</div>
+      <h1 class="text-2xl font-extrabold text-center mt-5">${reg?'Создать аккаунт':'Войти в аккаунт'}</h1>
+      <p class="text-mute text-center mt-1 text-sm px-2">${reg?'Ник и пароль нужны, чтобы данные хранились в облаке и открывались с любого устройства.':'Введи ник и пароль, и все твои данные подтянутся.'}</p>
+      <div class="grid gap-3 mt-6">
+        <div><label class="text-sm text-mute" for="a-nick">Ник</label><input id="a-nick" class="${INP} mt-1" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" placeholder="например, fenx" value="${esc(au.nick)}" oninput="au.nick=this.value" onkeydown="if(event.key==='Enter')$('#a-pass').focus()"></div>
+        <div><label class="text-sm text-mute" for="a-pass">Пароль</label><input id="a-pass" type="password" class="${INP} mt-1" autocomplete="${reg?'new-password':'current-password'}" placeholder="${reg?'минимум 6 символов':'твой пароль'}" value="${esc(au.pass)}" oninput="au.pass=this.value" onkeydown="if(event.key==='Enter')authGo()"></div>
+        ${reg?'<p class="text-xs text-mute">Пароль нельзя восстановить, поэтому запомни его. Не используй пароль от важных сервисов.</p>':''}
+        ${au.err?`<p class="text-bad text-sm" role="alert">${esc(au.err)}</p>`:''}
+        <button onclick="authGo()" class="${BTN} ${au.busy?'opacity-60':''}" ${au.busy?'disabled':''}>${au.busy?'Подожди…':reg?'Создать аккаунт':'Войти'}</button>
+        <button onclick="au.mode='${reg?'login':'reg'}';au.err='';render()" class="min-h-[44px] text-act text-sm">${reg?'Уже есть аккаунт? Войти':'Нет аккаунта? Создать'}</button>
+      </div></div></div>`;
+}
+function finishAuth(onboard){showAuth=false;au={mode:'login',nick:'',pass:'',err:'',busy:false};if(onboard)step=1;tab='tasks';render()}
+async function authGo(){
+  if(au.busy)return;
+  const nick=au.nick.trim(),pass=au.pass;
+  if(!nick||!pass){au.err='Введи ник и пароль';render();return}
+  au.busy=true;au.err='';render();
+  try{
+    if(au.mode==='reg'){
+      const r=await rpc('slash_register',{p_nick:nick,p_pass:pass,p_data:S.profile?S:null});
+      if(r.error)throw r.error;
+      ACC={nick:r.nick,token:r.token,ver:null,dirty:false};saveAcc();setSt('ok');finishAuth(!S.profile);pull(true);
+    }else{
+      const r=await rpc('slash_login',{p_nick:nick,p_pass:pass});
+      if(r.error)throw r.error;
+      const rem=r.data&&r.data.profile?r.data:null,keep=!!(S.profile&&ACC&&ACC.nick===r.nick&&ACC.dirty);
+      if(rem&&!keep&&S.profile&&!confirm('На этом устройстве уже есть данные. Заменить их данными аккаунта «'+r.nick+'»?')){
+        rpc('slash_logout',{p_token:r.token}).catch(()=>{});au.busy=false;au.err='Вход отменён, данные на устройстве не тронуты';render();return}
+      ACC={nick:r.nick,token:r.token,ver:r.updated_at,dirty:false};
+      if(rem&&!keep)applyRemote(rem);else if(S.profile)ACC.dirty=true;
+      saveAcc();setSt('idle');finishAuth(!S.profile);if(ACC.dirty)push();else setSt('ok');
+    }
+  }catch(e){au.busy=false;au.err=AERR[typeof e==='string'?e:'network']||AERR.network;render()}
+}
+async function logout(){
+  if(!ACC)return;
+  if(!confirm('Выйти из аккаунта? Данные останутся в облаке, а на этом устройстве будут убраны. Файлы клиентов лежат только на устройстве и вернутся, когда войдёшь здесь снова.'))return;
+  if(ACC.dirty&&!ACC.expired){clearTimeout(pt);await push();if(ACC&&ACC.dirty&&!confirm('Часть изменений не успела уйти в облако. Всё равно выйти?'))return}
+  const t=ACC&&ACC.token;if(t)rpc('slash_logout',{p_token:t}).catch(()=>{});
+  ACC=null;saveAcc();S=blank();S.theme=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';S.pal='purple';
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  draft={name:'',peak:'',style:'',traits:[]};step=0;tab='tasks';$('#sheet')?.remove();applyLook();render();
+}
+function acctBlock(){
+  return ACC?`<div class="rounded-2xl bg-bg border border-line p-3 mb-5">
+      <div class="flex items-center justify-between gap-2"><div class="min-w-0"><p class="text-xs text-mute">Аккаунт</p><p class="font-bold truncate">@${esc(ACC.nick)}</p><p id="sy" class="text-xs mt-0.5">${syncTxt()}</p></div>
+      ${ACC.expired?`<button onclick="openAuth('login')" class="min-h-[44px] px-4 rounded-xl bg-ac text-acfg font-bold text-sm">Войти</button>`:`<button aria-label="Синхронизировать" onclick="syncNow()" class="w-11 h-11 shrink-0 rounded-xl bg-card2 text-mute flex items-center justify-center">${ic('rotate-ccw','w-4 h-4')}</button>`}</div>
+      <button onclick="logout()" class="mt-3 w-full min-h-[44px] rounded-xl border border-line text-sm">Выйти из аккаунта</button></div>`
+  :`<div class="rounded-2xl bg-bg border border-line p-3 mb-5"><p class="text-xs text-mute">Аккаунт</p>
+      <p class="text-sm mt-1">Сейчас данные лежат только на этом устройстве. Создай аккаунт, чтобы они сохранялись в облаке и открывались с другого телефона.</p>
+      <div class="grid grid-cols-2 gap-2 mt-3"><button onclick="openAuth('reg')" class="min-h-[44px] rounded-xl bg-ac text-acfg font-bold text-sm">Создать</button><button onclick="openAuth('login')" class="min-h-[44px] rounded-xl border border-line text-sm">Войти</button></div></div>`;
+}
+addEventListener('online',()=>{if(ACC&&ACC.dirty)push()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&ACC)ACC.dirty?push():pull()});
 
 setInterval(()=>{
   document.querySelectorAll('[data-due]').forEach(el=>{
@@ -484,7 +606,7 @@ setInterval(()=>{
   if(F.on){F.left=Math.max(0,Math.round((F.end-Date.now())/1000));
     if(F.left<=0){try{navigator.vibrate(400)}catch(e){}F={left:1500,on:false};focusUpd()}else{const m=$('#fm');if(m)m.textContent=mmss(F.left)}}
 },1000);
-applyLook();render();
+applyLook();render();if(ACC)ACC.dirty?push():pull();
 </script>
 </body>
 </html>
