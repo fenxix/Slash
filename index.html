@@ -65,6 +65,7 @@ const ig=h=>{h=(h||'').trim();return !h?'':/^https?:/i.test(h)?h:'https://instag
 const isUrl=s=>/^(https?:\/\/|www\.)/i.test((s||'').trim());
 const ICP={"bookmark": "<path d=\"m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z\"/>", "calculator": "<rect width=\"16\" height=\"20\" x=\"4\" y=\"2\" rx=\"2\"/><path d=\"M8 6h8M16 14v4M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01\"/>", "calendar-check": "<path d=\"M8 2v4M16 2v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/><path d=\"m9 16 2 2 4-4\"/>", "calendar-clock": "<path d=\"M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5\"/><path d=\"M16 2v4M8 2v4M3 10h5\"/><circle cx=\"17.5\" cy=\"17.5\" r=\"4.5\"/><path d=\"M17.5 15.5v2l1 1\"/>", "check": "<path d=\"M20 6 9 17l-5-5\"/>", "check-circle-2": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m9 12 2 2 4-4\"/>", "circle": "<circle cx=\"12\" cy=\"12\" r=\"10\"/>", "coffee": "<path d=\"M10 2v2M14 2v2M6 2v2\"/><path d=\"M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1\"/>", "coins": "<circle cx=\"8\" cy=\"8\" r=\"6\"/><path d=\"M18.09 10.37A6 6 0 1 1 10.34 18\"/><path d=\"M7 6h1v4\"/><path d=\"m16.71 13.88.7.71-2.82 2.82\"/>", "download": "<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><path d=\"m7 10 5 5 5-5\"/><path d=\"M12 15V3\"/>", "file-text": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"/><path d=\"M10 9H8M16 13H8M16 17H8\"/>", "flame": "<path d=\"M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z\"/>", "globe": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"/><path d=\"M2 12h20\"/>", "hourglass": "<path d=\"M5 22h14M5 2h14\"/><path d=\"M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22\"/><path d=\"M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2\"/>", "image": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><circle cx=\"9\" cy=\"9\" r=\"2\"/><path d=\"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\"/>", "instagram": "<rect width=\"20\" height=\"20\" x=\"2\" y=\"2\" rx=\"5\" ry=\"5\"/><path d=\"M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z\"/><path d=\"M17.5 6.5h.01\"/>", "layers": "<path d=\"m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z\"/><path d=\"m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65\"/><path d=\"m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65\"/>", "lightbulb": "<path d=\"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5\"/><path d=\"M9 18h6M10 22h4\"/>", "link": "<path d=\"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71\"/><path d=\"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71\"/>", "list-checks": "<path d=\"m3 17 2 2 4-4\"/><path d=\"m3 7 2 2 4-4\"/><path d=\"M13 6h8M13 12h8M13 18h8\"/>", "moon": "<path d=\"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z\"/>", "paperclip": "<path d=\"m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48\"/>", "pause": "<rect width=\"4\" height=\"16\" x=\"6\" y=\"4\"/><rect width=\"4\" height=\"16\" x=\"14\" y=\"4\"/>", "pencil": "<path d=\"M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z\"/><path d=\"m15 5 4 4\"/>", "play": "<polygon points=\"6 3 20 12 6 21 6 3\"/>", "plus": "<path d=\"M5 12h14M12 5v14\"/>", "rotate-ccw": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2m-7.07-17.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41\"/>", "sunrise": "<path d=\"M12 2v8\"/><path d=\"m4.93 10.93 1.41 1.41\"/><path d=\"M2 18h2M20 18h2\"/><path d=\"m19.07 10.93-1.41 1.41\"/><path d=\"M22 22H2\"/><path d=\"m8 6 4-4 4 4\"/><path d=\"M16 18a4 4 0 0 0-8 0\"/>", "target": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><circle cx=\"12\" cy=\"12\" r=\"6\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/>", "timer": "<path d=\"M10 2h4\"/><path d=\"m12 14 3-3\"/><circle cx=\"12\" cy=\"14\" r=\"8\"/>", "trash-2": "<path d=\"M3 6h18\"/><path d=\"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6\"/><path d=\"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/><path d=\"M10 11v6M14 11v6\"/>", "trending-up": "<path d=\"M22 7 13.5 15.5 8.5 10.5 2 17\"/><path d=\"M16 7h6v6\"/>", "user": "<path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/>", "users": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75\"/>", "wand-2": "<path d=\"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72\"/><path d=\"m14 7 3 3\"/><path d=\"M5 6v4M19 14v4M10 2v2M7 8H3M21 16h-4M11 3H9\"/>", "x": "<path d=\"M18 6 6 18M6 6l12 12\"/>", "zap": "<path d=\"M13 2 3 14h9l-1 8 10-12h-9l1-8z\"/>"};
 ICP.settings='<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>';
+Object.assign(ICP,{menu:'<line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>',search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>','map-pin':'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>','message-circle':'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>','chevron-right':'<path d="m9 18 6-6-6-6"/>'});
 const ic=(n,c='w-5 h-5')=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${c}" aria-hidden="true" style="flex-shrink:0">${ICP[n]||ICP.circle}</svg>`;
 const paint=()=>{};
 const pl=(n,f)=>{const m=n%100,d=n%10;return f[m>10&&m<20?2:d===1?0:d>1&&d<5?1:2]};
@@ -236,7 +237,7 @@ function clientCard(c){
   return `<div class="rounded-2xl bg-card border border-line p-4">
     <div class="flex items-start justify-between gap-2"><h3 class="font-bold text-lg min-w-0 break-words">${esc(c.name)}</h3>
       <div class="flex shrink-0 -mt-2 -mr-2"><button aria-label="Изменить" onclick="editClient('${c.id}')" class="w-11 h-11 flex items-center justify-center text-mute">${ic('pencil','w-4 h-4')}</button><button aria-label="Удалить клиента" onclick="delClient('${c.id}')" class="w-11 h-11 flex items-center justify-center text-mute">${ic('trash-2','w-4 h-4')}</button></div></div>
-    ${c.ig||c.web?`<div class="flex flex-wrap gap-2">${c.ig?lb(ig(c.ig),'instagram','Instagram'):''}${c.web?lb(url(c.web),'globe','Сайт'):''}</div>`:''}
+    ${c.ig||c.web||c.tel?`<div class="flex flex-wrap gap-2">${c.tel?telBtn(c.tel):''}${c.ig?lb(ig(c.ig),'instagram','Instagram'):''}${c.web?lb(url(c.web),'globe','Сайт'):''}</div>`:''}
     ${list}${est}${groups}${ups}</div>`;
 }
 function clientsView(){
@@ -246,9 +247,9 @@ function clientsView(){
     ${has('forget')?hint('Загружай сюда логотипы, фото и референсы клиента. Всё лежит в одной карточке.'):''}
     <div class="grid gap-3">${S.clients.map(clientCard).join('')||empty('users','Добавь первого клиента, чтобы фото, файлы и пожелания были под рукой.')}</div>`;
 }
-const clientFields=c=>[{l:'Название бизнеса',p:'Например, кофейня «Уголок»',v:c?.name},{l:'Instagram',p:'@ник или ссылка',v:c?.ig},{l:'Сайт',p:'example.com',v:c?.web},{l:'Что нужно клиенту',p:'Жми Enter: каждый пункт начнётся с •',t:'area',b:1,v:c?.needs}];
-function addClient(){sheet('Новый клиент',clientFields(),v=>{S.clients.unshift({id:uid(),name:v[0],ig:v[1],web:v[2],needs:toBullets(v[3]),att:[]});save();render()})}
-function editClient(id){const c=S.clients.find(x=>x.id===id);sheet('Изменить клиента',clientFields(c),v=>{Object.assign(c,{name:v[0],ig:v[1],web:v[2],needs:toBullets(v[3])});save();render()})}
+const clientFields=c=>[{l:'Название бизнеса',p:'Например, кофейня «Уголок»',v:c?.name},{l:'Телефон',p:'+7 700 000 00 00',t:'tel',v:c?.tel},{l:'Instagram',p:'@ник или ссылка',v:c?.ig},{l:'Сайт',p:'example.com',v:c?.web},{l:'Что нужно клиенту',p:'Жми Enter: каждый пункт начнётся с •',t:'area',b:1,v:c?.needs}];
+function addClient(){sheet('Новый клиент',clientFields(),v=>{S.clients.unshift({id:uid(),name:v[0],tel:v[1],ig:v[2],web:v[3],needs:toBullets(v[4]),att:[]});save();render()})}
+function editClient(id){const c=S.clients.find(x=>x.id===id);sheet('Изменить клиента',clientFields(c),v=>{Object.assign(c,{name:v[0],tel:v[1],ig:v[2],web:v[3],needs:toBullets(v[4])});save();render()})}
 function delClient(id){if(confirm('Удалить клиента и его файлы?')){const c=S.clients.find(x=>x.id===id);(c.att||[]).forEach(a=>dbx('del',a.id));S.clients=S.clients.filter(x=>x.id!==id);save();render()}}
 
 /* ---------- Рынок ---------- */
@@ -269,6 +270,94 @@ function marketView(){
 function addComp(){sheet('Новый конкурент',[{l:'Название',p:'Студия или фрилансер'},{l:'Сайт',p:'example.com'},{l:'Цена',p:'50000',t:'number'},{l:'Что входит в цену',p:'5 страниц, 2 правки, хостинг…',t:'area'}],
   v=>{S.comps.unshift({id:uid(),name:v[0],site:v[1],price:v[2],inc:v[3]});save();render()})}
 function delComp(id){S.comps=S.comps.filter(c=>c.id!==id);save();render()}
+
+/* ---------- Парсер: бизнесы без сайта (OpenStreetMap, прямо с телефона) ---------- */
+const LK='devhub.leads.v1',MENU_TABS=['parser','market'];
+const P0=()=>({q:'',city:'',cityq:'',where:'',res:[],st:null,added:{},busy:false,msg:'',err:''});
+let P=P0();try{Object.assign(P,JSON.parse(localStorage.getItem(LK)||'{}'))}catch(e){}P.busy=false;P.err='';
+const saveP=()=>{try{const{q,city,cityq,where,res,st,added}=P;localStorage.setItem(LK,JSON.stringify({q,city,cityq,where,res,st,added}))}catch(e){}};
+function resetP(){P=P0();try{localStorage.removeItem(LK)}catch(e){}}
+const NOSITE='instagram.com facebook.com fb.com fb.me vk.com ok.ru t.me telegram.me wa.me whatsapp.com tiktok.com youtube.com youtu.be twitter.com x.com linktr.ee taplink.cc taplink.ws bio.link lnk.bio hipolink.me beacons.ai 2gis.kz 2gis.ru google.com goo.gl yandex.ru yandex.kz olx.kz kolesa.kz krisha.kz'.split(' ');
+const hostOf=u=>{try{return new URL(/^\w+:\/\//.test(u)?u:'https://'+u).hostname.toLowerCase().replace(/^www\./,'')}catch(e){return''}};
+const realSite=u=>{const h=hostOf(u);return!!h&&!NOSITE.some(d=>h===d||h.endsWith('.'+d))};
+const CATS=[['Автосервис',/автосервис|(^|\s)сто($|\s)|автомастер|автоэлектрик|ремонт авто/,['shop=car_repair']],['Шиномонтаж',/шиномонтаж|шины/,['shop=tyres','service:vehicle:tyres=yes']],['Автомойка',/мойк/,['amenity=car_wash']],['Кофейня',/кофе/,['amenity=cafe']],['Кафе и рестораны',/кафе|ресторан|столов|фастфуд|пиццер/,['amenity=cafe','amenity=restaurant','amenity=fast_food']],['Барбершоп',/барбер|парикмахер|стрижк/,['shop=hairdresser']],['Салон красоты',/красот|маникюр|ногт|косметолог|салон/,['shop=beauty','shop=hairdresser']],['Стоматология',/стомат|зуб/,['amenity=dentist','healthcare=dentist']],['Цветы',/цвет|флорист/,['shop=florist']],['Фитнес',/фитнес|тренаж|спортзал|качалк/,['leisure=fitness_centre']],['Одежда',/одежд|бутик/,['shop=clothes']],['Аптека',/аптек/,['amenity=pharmacy']],['Продукты',/продукт|минимаркет/,['shop=convenience','shop=supermarket']],['Стройматериалы',/стройматериал|строительн/,['shop=doityourself','shop=hardware','shop=trade']],['Отели',/отел|гостиниц|хостел/,['tourism=hotel','tourism=guest_house','tourism=hostel']]];
+async function geo(city){
+  const r=await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=ru&q='+encodeURIComponent(city)),j=await r.json();
+  if(!j[0])throw'nocity';const g=j[0],id=+g.osm_id,t=g.osm_type,p=g.display_name.split(', ');
+  return{f:t==='relation'?`(area:${3600000000+id})`:t==='way'?`(area:${2400000000+id})`:`(around:7000,${g.lat},${g.lon})`,where:p[0]+(p.length>1?', '+p[p.length-1]:'')};
+}
+const OVP=['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter'];
+async function ovp(q){
+  let er='network';
+  for(const u of OVP){try{
+    const r=await fetch(u,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'data='+encodeURIComponent(q),signal:AbortSignal.timeout?AbortSignal.timeout(70000):undefined});
+    if(r.ok)return(await r.json()).elements||[];er='busy';
+  }catch(x){er=x&&x.name==='TimeoutError'?'busy':'network'}}
+  throw er;
+}
+const tg=(t,...k)=>k.map(x=>t[x]).filter(Boolean).flatMap(v=>v.split(';').map(s=>s.trim()).filter(Boolean));
+function toLead(e){
+  const t=e.tags||{},name=(t.name||'').trim(),sites=tg(t,'website','contact:website','url','contact:url');
+  if(!name)return null;if(sites.some(realSite))return 0;
+  let i=tg(t,'contact:instagram','instagram')[0]||sites.find(s=>hostOf(s)==='instagram.com')||'';
+  if(i)i=/instagram\.com/i.test(i)?url(i):'https://instagram.com/'+i.replace(/^@/,'');
+  return{id:e.type[0]+e.id,name,tel:tg(t,'phone','contact:phone','mobile','contact:mobile')[0]||'',ig:i,addr:[t['addr:street'],t['addr:housenumber']].filter(Boolean).join(', ')};
+}
+async function parserRun(){
+  if(P.busy)return;const q=P.q.trim(),city=P.city.trim();
+  if(!q){$('#p-q').focus();return}if(!city){$('#p-c').focus();return}
+  P.busy=true;P.err='';P.msg='Ищу город…';render();
+  try{
+    const g=await geo(city);P.msg='Ищу на карте, это до минуты…';if($('#p-m'))$('#p-m').textContent=P.msg;
+    const tags=[...new Set(CATS.filter(c=>c[1].test(q.toLowerCase())).flatMap(c=>c[2]))];
+    const nm=[...q.replace(/[^\p{L}\p{N} -]/gu,'')].map(c=>{const l=c.toLowerCase(),u=c.toUpperCase();return l!==u?`[${l}${u}]`:c}).join('');
+    const body=(tags.length?tags.map(x=>{const[k,v]=x.split('=');return`nwr["${k}"="${v}"]${g.f};`}):['shop','amenity','craft','office','tourism','leisure'].map(k=>`nwr["${k}"]["name"~"${nm}"]${g.f};`)).join('');
+    const el=await ovp(`[out:json][timeout:60];(${body});out center 600;`),seen=new Set(),res=[];let sk=0;
+    for(const e of el){const l=toLead(e);if(l===0)sk++;if(!l)continue;const k=l.name.toLowerCase()+'|'+l.addr.toLowerCase();if(!seen.has(k)){seen.add(k);res.push(l)}}
+    res.sort((a,b)=>(!!b.tel*2+!!b.ig)-(!!a.tel*2+!!a.ig)||a.name.localeCompare(b.name,'ru'));
+    Object.assign(P,{res:res.slice(0,300),st:{all:el.length,free:res.length},where:g.where,cityq:city});
+  }catch(e){P.err={nocity:'Не нашёл такой город. Добавь страну, например «Город, Казахстан».',busy:'Сервер карт занят или не ответил. Попробуй ещё раз через минуту.'}[e]||'Нет связи с сервером карт. Проверь интернет.'}
+  P.busy=false;saveP();render();
+}
+function addLead(id){
+  const l=P.res.find(x=>x.id===id);if(!l)return;
+  let c=S.clients.find(x=>x.name.toLowerCase()===l.name.toLowerCase());
+  if(!c){c={id:uid(),name:l.name,tel:l.tel,ig:l.ig,web:'',needs:toBullets('Нужен сайт'),att:[]};S.clients.unshift(c)}
+  P.added[id]=c.id;save();saveP();render();
+}
+const pbtn='min-h-[44px] px-3 rounded-xl bg-card2 text-sm flex items-center gap-2';
+const telBtn=t=>`<a href="tel:${esc(t.replace(/[^\d+]/g,''))}" class="${pbtn}">${ic('phone','w-4 h-4 text-act')}${esc(t)}</a>`;
+const waNum=s=>{let d=s.replace(/\D/g,'');if(d.length===11&&d[0]==='8')d='7'+d.slice(1);else if(d.length===10)d='7'+d;return d.length>=11?d:''};
+function leadCard(l){
+  const inC=S.clients.some(c=>c.id===P.added[l.id]),n=encodeURIComponent(l.name),city=encodeURIComponent(' '+P.cityq),wa=l.tel?waNum(l.tel):'';
+  const a=(h,i,t)=>`<a href="${esc(h)}" target="_blank" rel="noopener" class="${pbtn}">${ic(i,'w-4 h-4 text-act')}${t}</a>`;
+  return `<div class="rounded-2xl bg-card border border-line p-4">
+    <h3 class="font-bold text-[17px] break-words">${esc(l.name)}</h3>${l.addr?`<p class="text-xs text-mute mt-0.5 break-words">${esc(l.addr)}</p>`:''}
+    <div class="flex flex-wrap gap-2 mt-3">${l.tel?telBtn(l.tel):''}${wa?a('https://wa.me/'+wa,'message-circle','WhatsApp'):''}${a(l.ig||'https://www.google.com/search?q='+encodeURIComponent('site:instagram.com ')+n+city,'instagram',l.ig?'Instagram':'Найти Instagram')}${a('https://www.google.com/maps/search/?api=1&query='+n+city,'map-pin','Проверить на карте')}</div>
+    <button onclick="${inC?"go('clients')":`addLead('${l.id}')`}" class="mt-3 w-full min-h-[48px] rounded-2xl font-bold flex items-center justify-center gap-2 ${inC?'border border-ok/50 text-ok':'bg-ac text-acfg'}">${ic(inC?'check':'plus','w-4 h-4')}${inC?'В клиентах':'В клиенты'}</button></div>`;
+}
+function parserView(){
+  const s=P.st;
+  return `<p class="text-mute text-sm mb-3">Ищет бизнесы без сайта: это твои будущие клиенты.</p>
+  <div class="rounded-2xl bg-card border border-line p-3 mb-4 grid gap-2">
+    <div class="flex gap-2 overflow-x-auto ns -mx-1 px-1 pb-1">${CATS.map(c=>`<button onclick="P.q='${c[0]}';render()" class="shrink-0 min-h-[44px] px-3.5 rounded-full border text-sm ${P.q===c[0]?'bg-ac/15 border-ac text-act':'bg-bg border-line text-fg'}">${c[0]}</button>`).join('')}</div>
+    <input id="p-q" class="${INP}" placeholder="Что ищем, например автосервис" value="${esc(P.q)}" oninput="P.q=this.value" onkeydown="if(event.key==='Enter')$('#p-c').focus()">
+    <input id="p-c" class="${INP}" placeholder="Город, например Костанай" value="${esc(P.city)}" oninput="P.city=this.value" onkeydown="if(event.key==='Enter')parserRun()">
+    <button onclick="parserRun()" class="${BTN} !py-3 flex items-center justify-center gap-2 ${P.busy?'opacity-60':''}" ${P.busy?'disabled':''}>${ic('search')}${P.busy?'Ищу…':'Найти'}</button>
+    ${P.busy?`<p id="p-m" class="text-xs text-mute">${P.msg}</p>`:''}</div>
+  ${P.err?`<div class="rounded-2xl border border-bad/50 bg-bad/10 p-3 mb-4 text-sm text-bad" role="alert">${P.err}</div>`:''}
+  ${s?`<div class="flex items-baseline justify-between gap-2 mb-2"><p class="text-sm text-mute truncate">${esc(P.where)}</p><p class="text-sm whitespace-nowrap"><span class="mono font-bold text-act">${s.free}</span> <span class="text-mute">без сайта, на карте ${s.all}</span></p></div>
+  ${hint('Источник: OpenStreetMap. Там есть не все бизнесы, а у части сайт мог просто не попасть в базу. Перед звонком нажми «Проверить на карте».')}
+  ${P.res.length?`<div class="grid gap-3">${P.res.slice(0,50).map(leadCard).join('')}</div>${P.res.length>50?`<p class="text-xs text-mute text-center mt-3">Показаны первые 50 из ${P.res.length}, сначала те, у кого есть телефон. Уточни запрос, чтобы сузить список.</p>`:''}`:empty('search',s.all?'У всех найденных есть сайт.':'Ничего не нашлось. Попробуй другой запрос или проверь название города.')}`:empty('search','Выбери тип бизнеса и город, и я найду тех, у кого нет сайта.')}`;
+}
+
+/* ---------- Меню (бургер): настройки, парсер, рынок ---------- */
+function openMenu(){
+  const bad=ACC&&(sync.st==='err'||sync.st==='auth');
+  const row=(i,l,sub,fn,on,dot)=>`<button onclick="${fn}" class="w-full min-h-[64px] rounded-2xl bg-bg border ${on?'border-ac':'border-line'} px-4 flex items-center gap-3 text-left"><span class="w-11 h-11 rounded-xl bg-ac/15 text-act flex items-center justify-center shrink-0">${ic(i)}</span><span class="flex-1 min-w-0"><span class="block font-semibold text-[15px]">${l}</span><span class="block text-xs text-mute">${sub}</span></span>${dot?'<span class="w-2.5 h-2.5 rounded-full bg-warn"></span>':''}${ic('chevron-right','w-4 h-4 text-mute')}</button>`;
+  modal('Меню',`<div class="grid gap-2">${row('settings','Настройки','Аккаунт, оформление, валюта','openSettings()',false,bad)}${row('search','Парсер','Бизнесы без сайта','menuGo(\'parser\')',tab==='parser')}${row('trending-up','Рынок','Цены конкурентов','menuGo(\'market\')',tab==='market')}</div>`);
+}
+const menuGo=k=>{$('#sheet')?.remove();go(k)};
 
 /* ---------- Быстрые заметки: авто-разбор по «горячим» словам ---------- */
 const MO=['янв','фев','мар','апр','ма','июн','июл','авг','сен','окт','ноя','дек'];
@@ -460,24 +549,23 @@ function openSettings(){
 }
 
 /* ---------- Оболочка и навигация ---------- */
-const NAV=[['tasks','target','Фокус'],['clients','users','Клиенты'],null,['market','trending-up','Рынок'],['money','coins','Деньги']];
+const NAV=[['tasks','target','Фокус'],['clients','users','Клиенты'],null,['money','coins','Деньги'],['menu','menu','Меню']];
 function go(k){tab=k;lastMsg='';render();$('#main').scrollTop=0;if(k==='notes')setTimeout(()=>$('#n-in')?.focus(),50)}
 function nav(){
   return `<nav class="relative mx-3 mb-3 mt-1 h-16 shrink-0 rounded-[28px] bg-card shadow-[0_12px_32px_-14px_rgb(0_0_0/.55)] grid grid-cols-5 items-center">
     <span class="absolute left-1/2 -translate-x-1/2 -top-[26px] w-[84px] h-[84px] rounded-full bg-card" aria-hidden="true"></span>
-    ${NAV.map(n=>n?`<button aria-label="${n[2]}" onclick="go('${n[0]}')" class="relative h-16 flex flex-col items-center justify-center gap-1 ${tab===n[0]?'text-fg':'text-mute'}">${ic(n[1],'w-6 h-6')}<span class="w-1 h-1 rounded-full ${tab===n[0]?'bg-ac':'bg-transparent'}"></span></button>`:'<span></span>').join('')}
+    ${NAV.map(n=>{if(!n)return'<span></span>';const m=n[0]==='menu',on=m?MENU_TABS.includes(tab):tab===n[0];return`<button aria-label="${n[2]}" onclick="${m?'openMenu()':`go('${n[0]}')`}" class="relative h-16 flex flex-col items-center justify-center gap-1 ${on?'text-fg':'text-mute'}">${ic(n[1],'w-6 h-6')}<span class="w-1 h-1 rounded-full ${on?'bg-ac':'bg-transparent'}"></span>${m?`<span id="gd" class="absolute top-3 left-1/2 ml-2.5 w-2.5 h-2.5 rounded-full bg-warn ${ACC&&(sync.st==='err'||sync.st==='auth')?'':'hidden'}"></span>`:''}</button>`}).join('')}
     <button aria-label="Быстрые заметки" onclick="go('notes')" class="fab ${tab==='notes'?'on':''} absolute left-1/2 -translate-x-1/2 -top-[14px]">${ic('plus','w-7 h-7')}</button></nav>`;
 }
 function shell(){
   const h=new Date().getHours(),g=h<5?'Доброй ночи':h<12?'Доброе утро':h<18?'Добрый день':'Добрый вечер';
-  const titles={tasks:'Фокус',clients:'Клиенты и файлы',market:'Рынок и цены',money:'Деньги',notes:'Быстрые заметки'};
-  const view={tasks:tasksView,clients:clientsView,market:marketView,money:moneyView,notes:notesView}[tab]();
+  const titles={tasks:'Фокус',clients:'Клиенты и файлы',market:'Рынок и цены',money:'Деньги',parser:'Парсер',notes:'Быстрые заметки'};
+  const view={tasks:tasksView,clients:clientsView,market:marketView,money:moneyView,parser:parserView,notes:notesView}[tab]();
   return `<div class="h-full max-w-md mx-auto flex flex-col bg-bg text-fg md:border-x md:border-line">
-    <header class="px-5 pt-5 pb-3 flex items-center gap-3">${logo(40)}<div class="min-w-0 flex-1"><p class="text-sm text-mute truncate">${g}, ${esc(S.profile.name)}</p><h1 class="text-2xl font-extrabold leading-tight truncate">${titles[tab]}</h1></div>
-    <button aria-label="Настройки" onclick="openSettings()" class="relative w-11 h-11 shrink-0 rounded-xl bg-card border border-line text-mute flex items-center justify-center">${ic('settings','w-5 h-5')}<span id="gd" class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-warn ${ACC&&(sync.st==='err'||sync.st==='auth')?'':'hidden'}"></span></button></header>
+    <header class="px-5 pt-5 pb-3 flex items-center gap-3">${logo(40)}<div class="min-w-0 flex-1"><p class="text-sm text-mute truncate">${g}, ${esc(S.profile.name)}</p><h1 class="text-2xl font-extrabold leading-tight truncate">${titles[tab]}</h1></div></header>
     <main id="main" class="flex-1 overflow-y-auto ns px-4 pb-12">${view}</main>${nav()}</div>`;
 }
-function resetApp(){if(confirm(ACC?'Стереть все данные, в том числе в облаке аккаунта @'+ACC.nick+'? Это нельзя отменить.':'Стереть все данные и пройти настройку заново?')){const{theme,pal,cur}=S;S={profile:null,tasks:[],clients:[],comps:[],notes:[],draft:'',cur,theme,pal,money:{free:30,items:[],inc:[]}};$('#sheet')?.remove();draft={name:'',peak:'',style:'',traits:[]};step=0;tab='tasks';dbx('clear');save();render()}}
+function resetApp(){if(confirm(ACC?'Стереть все данные, в том числе в облаке аккаунта @'+ACC.nick+'? Это нельзя отменить.':'Стереть все данные и пройти настройку заново?')){const{theme,pal,cur}=S;S={profile:null,tasks:[],clients:[],comps:[],notes:[],draft:'',cur,theme,pal,money:{free:30,items:[],inc:[]}};$('#sheet')?.remove();draft={name:'',peak:'',style:'',traits:[]};step=0;tab='tasks';dbx('clear');resetP();save();render()}}
 function render(){const sc=$('#main')?.scrollTop||0;$('#app').innerHTML=showAuth?authScreen():S.profile?shell():onboarding();paint();hydrate();if($('#main'))$('#main').scrollTop=sc}
 
 /* ---------- Аккаунт и облако (Supabase) ---------- */
@@ -583,7 +671,7 @@ async function logout(){
   const t=ACC&&ACC.token;if(t)rpc('slash_logout',{p_token:t}).catch(()=>{});
   ACC=null;saveAcc();S=blank();S.theme=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';S.pal='purple';
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-  draft={name:'',peak:'',style:'',traits:[]};step=0;tab='tasks';$('#sheet')?.remove();applyLook();render();
+  draft={name:'',peak:'',style:'',traits:[]};step=0;tab='tasks';resetP();$('#sheet')?.remove();applyLook();render();
 }
 function acctBlock(){
   return ACC?`<div class="rounded-2xl bg-bg border border-line p-3 mb-5">
