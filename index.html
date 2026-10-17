@@ -273,9 +273,9 @@ function delComp(id){S.comps=S.comps.filter(c=>c.id!==id);save();render()}
 
 /* ---------- Парсер: бизнесы без сайта (OpenStreetMap, прямо с телефона) ---------- */
 const LK='devhub.leads.v1',MENU_TABS=['parser','market'];
-const P0=()=>({q:'',city:'',cityq:'',where:'',res:[],st:null,added:{},busy:false,msg:'',err:''});
-let P=P0();try{Object.assign(P,JSON.parse(localStorage.getItem(LK)||'{}'))}catch(e){}P.busy=false;P.err='';
-const saveP=()=>{try{const{q,city,cityq,where,res,st,added}=P;localStorage.setItem(LK,JSON.stringify({q,city,cityq,where,res,st,added}))}catch(e){}};
+const P0=()=>({q:'',city:'',cityq:'',where:'',res:[],st:null,added:{},hide:{},busy:false,msg:'',err:''});
+let P=P0();try{Object.assign(P,JSON.parse(localStorage.getItem(LK)||'{}'))}catch(e){}P.busy=false;P.err='';P.hide=P.hide||{};
+const saveP=()=>{try{const{q,city,cityq,where,res,st,added,hide}=P;localStorage.setItem(LK,JSON.stringify({q,city,cityq,where,res,st,added,hide}))}catch(e){}};
 function resetP(){P=P0();try{localStorage.removeItem(LK)}catch(e){}}
 const NOSITE='instagram.com facebook.com fb.com fb.me vk.com ok.ru t.me telegram.me wa.me whatsapp.com tiktok.com youtube.com youtu.be twitter.com x.com linktr.ee taplink.cc taplink.ws bio.link lnk.bio hipolink.me beacons.ai 2gis.kz 2gis.ru google.com goo.gl yandex.ru yandex.kz olx.kz kolesa.kz krisha.kz'.split(' ');
 const hostOf=u=>{try{return new URL(/^\w+:\/\//.test(u)?u:'https://'+u).hostname.toLowerCase().replace(/^www\./,'')}catch(e){return''}};
@@ -313,12 +313,13 @@ async function parserRun(){
     const nm=[...q.replace(/[^\p{L}\p{N} -]/gu,'')].map(c=>{const l=c.toLowerCase(),u=c.toUpperCase();return l!==u?`[${l}${u}]`:c}).join('');
     const body=(tags.length?tags.map(x=>{const[k,v]=x.split('=');return`nwr["${k}"="${v}"]${g.f};`}):['shop','amenity','craft','office','tourism','leisure'].map(k=>`nwr["${k}"]["name"~"${nm}"]${g.f};`)).join('');
     const el=await ovp(`[out:json][timeout:60];(${body});out center 600;`),seen=new Set(),res=[];let sk=0;
-    for(const e of el){const l=toLead(e);if(l===0)sk++;if(!l)continue;const k=l.name.toLowerCase()+'|'+l.addr.toLowerCase();if(!seen.has(k)){seen.add(k);res.push(l)}}
+    for(const e of el){const l=toLead(e);if(l===0)sk++;if(!l||P.hide[l.id])continue;const k=l.name.toLowerCase()+'|'+l.addr.toLowerCase();if(!seen.has(k)){seen.add(k);res.push(l)}}
     res.sort((a,b)=>(!!b.tel*2+!!b.ig)-(!!a.tel*2+!!a.ig)||a.name.localeCompare(b.name,'ru'));
     Object.assign(P,{res:res.slice(0,300),st:{all:el.length,free:res.length},where:g.where,cityq:city});
   }catch(e){P.err={nocity:'Не нашёл такой город. Добавь страну, например «Город, Казахстан».',busy:'Сервер карт занят или не ответил. Попробуй ещё раз через минуту.'}[e]||'Нет связи с сервером карт. Проверь интернет.'}
   P.busy=false;saveP();render();
 }
+const hideLead=id=>{P.hide[id]=1;saveP();render()};
 function addLead(id){
   const l=P.res.find(x=>x.id===id);if(!l)return;
   let c=S.clients.find(x=>x.name.toLowerCase()===l.name.toLowerCase());
@@ -334,10 +335,10 @@ function leadCard(l){
   return `<div class="rounded-2xl bg-card border border-line p-4">
     <h3 class="font-bold text-[17px] break-words">${esc(l.name)}</h3>${l.addr?`<p class="text-xs text-mute mt-0.5 break-words">${esc(l.addr)}</p>`:''}
     <div class="flex flex-wrap gap-2 mt-3">${l.tel?telBtn(l.tel):''}${wa?a('https://wa.me/'+wa,'message-circle','WhatsApp'):''}${a(l.ig||'https://www.google.com/search?q='+encodeURIComponent('site:instagram.com ')+n+city,'instagram',l.ig?'Instagram':'Найти Instagram')}${a('https://www.google.com/maps/search/?api=1&query='+n+city,'map-pin','Проверить на карте')}</div>
-    <button onclick="${inC?"go('clients')":`addLead('${l.id}')`}" class="mt-3 w-full min-h-[48px] rounded-2xl font-bold flex items-center justify-center gap-2 ${inC?'border border-ok/50 text-ok':'bg-ac text-acfg'}">${ic(inC?'check':'plus','w-4 h-4')}${inC?'В клиентах':'В клиенты'}</button></div>`;
+    <div class="flex gap-2 mt-3"><button onclick="${inC?"go('clients')":`addLead('${l.id}')`}" class="flex-1 min-h-[48px] rounded-2xl font-bold flex items-center justify-center gap-2 ${inC?'border border-ok/50 text-ok':'bg-ac text-acfg'}">${ic(inC?'check':'plus','w-4 h-4')}${inC?'В клиентах':'В клиенты'}</button>${inC?'':`<button onclick="hideLead('${l.id}')" class="min-h-[48px] px-4 rounded-2xl border border-line text-mute font-semibold flex items-center justify-center gap-2">${ic('x','w-4 h-4')}Есть сайт</button>`}</div></div>`;
 }
 function parserView(){
-  const s=P.st;
+  const s=P.st,vis=P.res.filter(l=>!P.hide[l.id]),nh=Object.keys(P.hide).length;
   return `<p class="text-mute text-sm mb-3">Ищет бизнесы без сайта: это твои будущие клиенты.</p>
   <div class="rounded-2xl bg-card border border-line p-3 mb-4 grid gap-2">
     <div class="flex gap-2 overflow-x-auto ns -mx-1 px-1 pb-1">${CATS.map(c=>`<button onclick="P.q='${c[0]}';render()" class="shrink-0 min-h-[44px] px-3.5 rounded-full border text-sm ${P.q===c[0]?'bg-ac/15 border-ac text-act':'bg-bg border-line text-fg'}">${c[0]}</button>`).join('')}</div>
@@ -346,9 +347,9 @@ function parserView(){
     <button onclick="parserRun()" class="${BTN} !py-3 flex items-center justify-center gap-2 ${P.busy?'opacity-60':''}" ${P.busy?'disabled':''}>${ic('search')}${P.busy?'Ищу…':'Найти'}</button>
     ${P.busy?`<p id="p-m" class="text-xs text-mute">${P.msg}</p>`:''}</div>
   ${P.err?`<div class="rounded-2xl border border-bad/50 bg-bad/10 p-3 mb-4 text-sm text-bad" role="alert">${P.err}</div>`:''}
-  ${s?`<div class="flex items-baseline justify-between gap-2 mb-2"><p class="text-sm text-mute truncate">${esc(P.where)}</p><p class="text-sm whitespace-nowrap"><span class="mono font-bold text-act">${s.free}</span> <span class="text-mute">без сайта, на карте ${s.all}</span></p></div>
+  ${s?`<div class="flex items-baseline justify-between gap-2 mb-2"><p class="text-sm text-mute truncate">${esc(P.where)}</p><p class="text-sm whitespace-nowrap"><span class="mono font-bold text-act">${vis.length}</span> <span class="text-mute">без сайта, на карте ${s.all}</span></p></div>
   ${hint('Источник: OpenStreetMap. Там есть не все бизнесы, а у части сайт мог просто не попасть в базу. Перед звонком нажми «Проверить на карте».')}
-  ${P.res.length?`<div class="grid gap-3">${P.res.slice(0,50).map(leadCard).join('')}</div>${P.res.length>50?`<p class="text-xs text-mute text-center mt-3">Показаны первые 50 из ${P.res.length}, сначала те, у кого есть телефон. Уточни запрос, чтобы сузить список.</p>`:''}`:empty('search',s.all?'У всех найденных есть сайт.':'Ничего не нашлось. Попробуй другой запрос или проверь название города.')}`:empty('search','Выбери тип бизнеса и город, и я найду тех, у кого нет сайта.')}`;
+  ${vis.length?`<div class="grid gap-3">${vis.slice(0,50).map(leadCard).join('')}</div>${vis.length>50?`<p class="text-xs text-mute text-center mt-3">Показаны первые 50 из ${vis.length}, сначала те, у кого есть телефон. Уточни запрос, чтобы сузить список.</p>`:''}`:empty('search',s.all?'Больше никого нет: у остальных найденных есть сайт.':'Ничего не нашлось. Попробуй другой запрос или проверь название города.')}${nh?`<button onclick="P.hide={};saveP();render()" class="w-full min-h-[44px] mt-3 text-sm text-mute">Вернуть скрытые (${nh})</button>`:''}`:empty('search','Выбери тип бизнеса и город, и я найду тех, у кого нет сайта.')}`;
 }
 
 /* ---------- Меню (бургер): настройки, парсер, рынок ---------- */
