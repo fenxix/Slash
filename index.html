@@ -294,11 +294,11 @@ function offerText(c,text){
 }
 function offerOpen(cid){
   const c=S.clients.find(x=>x.id===cid);if(!c)return;
-  const row=t=>`<div class="flex gap-2"><button onclick="offerGen('${cid}','${t.id}')" class="flex-1 min-w-0 min-h-[56px] rounded-2xl bg-bg border border-line px-4 text-left"><span class="block font-semibold truncate">${esc(t.name)}</span><span class="block text-xs text-mute truncate">${esc(t.text.replace(/\s+/g,' '))}</span></button>
+  const row=t=>`<div class="flex gap-2 min-w-0"><button onclick="offerGen('${cid}','${t.id}')" class="flex-1 min-w-0 overflow-hidden min-h-[56px] rounded-2xl bg-bg border border-line px-4 text-left"><span class="block font-semibold truncate">${esc(t.name)}</span><span class="block text-xs text-mute truncate">${esc(t.text.replace(/\s+/g,' '))}</span></button>
     <button aria-label="Изменить" onclick="tplEdit('${t.id}','${cid}')" class="w-12 shrink-0 rounded-2xl border border-line text-mute flex items-center justify-center">${ic('pencil','w-4 h-4')}</button>
     <button aria-label="Удалить вариант" onclick="tplDel('${t.id}','${cid}')" class="w-12 shrink-0 rounded-2xl border border-line text-bad flex items-center justify-center">${ic('trash-2','w-4 h-4')}</button></div>`;
   const undo=TPLUNDO?`<div class="flex items-center gap-2 rounded-xl bg-card2 border border-line pl-3 pr-1 py-1 mb-3 text-sm"><span class="flex-1 min-w-0 truncate">Удалён «${esc(TPLUNDO.t.name)}»</span><button onclick="tplUndo('${cid}')" class="min-h-[44px] px-3 rounded-lg text-act font-semibold">Вернуть</button></div>`:'';
-  modal('Оффер для «'+esc(c.name)+'»',`${undo}${tpls().length?`<p class="text-sm text-mute mb-2">Выбери вариант, данные клиента подставятся сами.</p><div class="grid gap-2">${tpls().map(row).join('')}</div>`:'<p class="text-sm text-mute mb-2">Вариантов пока нет. Создай структуру письма: она подойдёт для любого клиента.</p>'}
+  modal('Оффер для «'+esc(c.name)+'»',`${undo}${tpls().length?`<p class="text-sm text-mute mb-2">Выбери вариант, данные клиента подставятся сами.</p><div class="grid grid-cols-1 gap-2">${tpls().map(row).join('')}</div>`:'<p class="text-sm text-mute mb-2">Вариантов пока нет. Создай структуру письма: она подойдёт для любого клиента.</p>'}
     <button onclick="tplEdit('','${cid}')" class="${BTN} mt-4 !py-3 flex items-center justify-center gap-2">${ic('plus')}Создать вариант</button>`);
 }
 function offerGen(cid,tid){
@@ -609,7 +609,7 @@ function moneyView(){
 function modal(title,body){
   $('#sheet')?.remove();
   const el=document.createElement('div');el.id='sheet';el.className='fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm';
-  el.innerHTML=`<div class="sheet w-full max-w-md max-h-[92%] overflow-y-auto rounded-t-3xl bg-card text-fg border-t border-line p-5" style="padding-bottom:calc(1.25rem + env(safe-area-inset-bottom,0px))">
+  el.innerHTML=`<div class="sheet w-full max-w-md max-h-[92%] overflow-y-auto overflow-x-hidden rounded-t-3xl bg-card text-fg border-t border-line p-5" style="padding-bottom:calc(1.25rem + env(safe-area-inset-bottom,0px))">
     <div class="flex items-center justify-between mb-4"><h3 class="text-xl font-bold">${title}</h3><button id="sx" aria-label="Закрыть" class="w-11 h-11 -mr-2 flex items-center justify-center text-mute">${ic('x')}</button></div>${body}</div>`;
   document.body.appendChild(el);paint();
   el.onclick=e=>{if(e.target===el)el.remove()};$('#sx').onclick=()=>el.remove();return el;
