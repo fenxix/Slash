@@ -274,8 +274,15 @@ function delComp(id){S.comps=S.comps.filter(c=>c.id!==id);save();render()}
 /*OFFERS*/
 /* ---------- Офферы: свои структуры писем, данные клиента подставляются сами ---------- */
 const TAGS=['имя','нужно','нужно_строкой','телефон','instagram','сайт','цена','я'];
+const PRESETS=[
+  ['Знакомство',['Здравствуйте, {имя}!','Меня зовут {я}, я делаю сайты для малого бизнеса.','Что могу сделать для вас: {нужно_строкой}','Ориентир по стоимости: {цена}','Если интересно, расскажу подробнее и пришлю примеры работ.','С уважением, {я}'].join('\n')],
+  ['Нет сайта',['Здравствуйте, {имя}!','Нашёл вас в интернете, а своего сайта пока не вижу. Сегодня многие ищут услуги с телефона, и без сайта часть клиентов уходит к конкурентам.','Я {я}, делаю сайты под ключ. Для вас предлагаю: {нужно_строкой}','Ориентировочная стоимость: {цена}','Напишите, если интересно, и я пришлю примеры.'].join('\n')],
+  ['Коротко в мессенджер',['Добрый день, {имя}! Это {я}, делаю сайты.','Могу сделать для вас: {нужно_строкой}','Ориентир по цене: {цена}','Интересно? Расскажу подробнее.'].join('\n')],
+  ['Напоминание',['Здравствуйте, {имя}!','Недавно писал вам про сайт. Вопрос ещё актуален?','Если нужно, подготовлю расчёт: {цена}','{я}'].join('\n')]
+];
 const tpls=()=>S.tpls||(S.tpls=[]);
-const offerBtn=id=>`<button onclick="offerOpen('${id}')" class="mt-3 w-full min-h-[48px] rounded-xl bg-ac/15 text-act font-semibold flex items-center justify-center gap-2">${ic('message-circle','w-4 h-4')}Написать оффер</button>`;
+let TPLUNDO=null;
+const offerBtn=id=>`<button onclick="TPLUNDO=null;offerOpen('${id}')" class="mt-3 w-full min-h-[48px] rounded-xl bg-ac/15 text-act font-semibold flex items-center justify-center gap-2">${ic('message-circle','w-4 h-4')}Написать оффер</button>`;
 function offerText(c,text){
   const tk=k=>{k=k.trim().toLowerCase().replace(/\s+/g,'_');return k==='название'?'имя':k},hv=k=>Object.prototype.hasOwnProperty.call(v,tk(k));
   const es=estimate(c),it=bl(c.needs),v={'имя':c.name,'нужно':it.map(x=>'• '+x).join('\n'),'нужно_строкой':it.join(', '),'телефон':c.tel||'','instagram':c.ig?ig(c.ig):'','сайт':c.web?url(c.web):'','цена':es?'≈ '+money(es.avg):'','я':S.profile.name};
@@ -287,10 +294,15 @@ function offerText(c,text){
 }
 function offerOpen(cid){
   const c=S.clients.find(x=>x.id===cid);if(!c)return;
-  modal('Оффер для «'+esc(c.name)+'»',`${tpls().length?`<p class="text-sm text-mute mb-2">Выбери вариант, данные клиента подставятся сами.</p><div class="grid gap-2">${tpls().map(t=>`<div class="flex gap-2"><button onclick="offerGen('${cid}','${t.id}')" class="flex-1 min-w-0 min-h-[56px] rounded-2xl bg-bg border border-line px-4 text-left"><span class="block font-semibold truncate">${esc(t.name)}</span><span class="block text-xs text-mute truncate">${esc(t.text.replace(/\s+/g,' '))}</span></button><button aria-label="Изменить" onclick="tplEdit('${t.id}','${cid}')" class="w-12 shrink-0 rounded-2xl border border-line text-mute flex items-center justify-center">${ic('pencil','w-4 h-4')}</button></div>`).join('')}</div>`:'<p class="text-sm text-mute mb-2">Вариантов пока нет. Создай структуру письма: она подойдёт для любого клиента.</p>'}
+  const row=t=>`<div class="flex gap-2"><button onclick="offerGen('${cid}','${t.id}')" class="flex-1 min-w-0 min-h-[56px] rounded-2xl bg-bg border border-line px-4 text-left"><span class="block font-semibold truncate">${esc(t.name)}</span><span class="block text-xs text-mute truncate">${esc(t.text.replace(/\s+/g,' '))}</span></button>
+    <button aria-label="Изменить" onclick="tplEdit('${t.id}','${cid}')" class="w-12 shrink-0 rounded-2xl border border-line text-mute flex items-center justify-center">${ic('pencil','w-4 h-4')}</button>
+    <button aria-label="Удалить вариант" onclick="tplDel('${t.id}','${cid}')" class="w-12 shrink-0 rounded-2xl border border-line text-bad flex items-center justify-center">${ic('trash-2','w-4 h-4')}</button></div>`;
+  const undo=TPLUNDO?`<div class="flex items-center gap-2 rounded-xl bg-card2 border border-line pl-3 pr-1 py-1 mb-3 text-sm"><span class="flex-1 min-w-0 truncate">Удалён «${esc(TPLUNDO.t.name)}»</span><button onclick="tplUndo('${cid}')" class="min-h-[44px] px-3 rounded-lg text-act font-semibold">Вернуть</button></div>`:'';
+  modal('Оффер для «'+esc(c.name)+'»',`${undo}${tpls().length?`<p class="text-sm text-mute mb-2">Выбери вариант, данные клиента подставятся сами.</p><div class="grid gap-2">${tpls().map(row).join('')}</div>`:'<p class="text-sm text-mute mb-2">Вариантов пока нет. Создай структуру письма: она подойдёт для любого клиента.</p>'}
     <button onclick="tplEdit('','${cid}')" class="${BTN} mt-4 !py-3 flex items-center justify-center gap-2">${ic('plus')}Создать вариант</button>`);
 }
 function offerGen(cid,tid){
+  TPLUNDO=null;
   const c=S.clients.find(x=>x.id===cid),t=tpls().find(x=>x.id===tid);if(!c||!t)return;
   const wa=c.tel?waNum(c.tel):'';
   modal(esc(t.name),`<p class="text-xs text-mute mb-2">Для «${esc(c.name)}». Текст можно поправить перед отправкой.</p>
@@ -300,22 +312,58 @@ function offerGen(cid,tid){
 }
 async function offerCopy(b){const t=$('#of-t');try{await navigator.clipboard.writeText(t.value)}catch(e){t.select();document.execCommand('copy')}b.textContent='Скопировано';setTimeout(()=>{b.textContent='Копировать'},1500)}
 function tplEdit(tid,cid){
-  const t=tpls().find(x=>x.id===tid)||{name:'',text:''};
-  modal(tid?'Изменить вариант':'Новый вариант',`<label class="text-sm text-mute">Название</label><input id="tp-n" class="${INP} mt-1 mb-3" placeholder="Например, приветствие" value="${esc(t.name)}">
-    <label class="text-sm text-mute">Структура текста</label><textarea id="tp-t" rows="9" class="${INP} mt-1 resize-none" placeholder="Здравствуйте, {имя}! Увидел, что у вас пока нет сайта…">${esc(t.text)}</textarea>
+  TPLUNDO=null;
+  const t=tpls().find(x=>x.id===tid)||{name:'',text:''},c=S.clients.find(x=>x.id===cid);
+  const ps=tid?'':`<div id="tp-ps" class="mb-4"><p class="text-sm text-mute mb-1.5">Начни с заготовки или пиши с нуля</p><div class="flex flex-wrap gap-2">${PRESETS.map((p,i)=>`<button onclick="tplPreset(${i})" class="min-h-[40px] px-3 rounded-full bg-ac/15 text-act text-sm font-medium">${esc(p[0])}</button>`).join('')}</div></div>`;
+  modal(tid?'Изменить вариант':'Новый вариант',`${ps}<label class="text-sm text-mute">Название</label><input id="tp-n" maxlength="60" oninput="this.classList.remove('!border-bad')" class="${INP} mt-1 mb-3" placeholder="Например, приветствие" value="${esc(t.name)}">
+    <div class="flex items-center justify-between"><label class="text-sm text-mute">Структура текста</label><span id="tp-c" class="text-xs text-mute mono"></span></div>
+    <textarea id="tp-t" rows="8" data-cid="${esc(cid)}" oninput="tpInput()" class="${INP} mt-1 resize-none" placeholder="Здравствуйте, {имя}! Увидел, что у вас пока нет сайта…">${esc(t.text)}</textarea>
     <p class="text-xs text-mute mt-2 mb-1.5">Нажми метку, она вставится в текст. Вместо неё подставятся данные клиента. Если данных нет, строка с этой меткой пропадёт.</p>
     <div class="flex flex-wrap gap-2">${TAGS.map(k=>`<button onmousedown="event.preventDefault()" onclick="tagIns('${k}')" class="min-h-[40px] px-3 rounded-full border border-line bg-bg text-sm">{${k}}</button>`).join('')}</div>
-    <div class="grid gap-2 mt-4"><button onclick="tplSave('${tid}','${cid}')" class="${BTN} !py-3">Сохранить</button>${tid?`<button onclick="tplDel('${tid}','${cid}')" class="min-h-[48px] rounded-2xl border border-bad/50 text-bad font-semibold">Удалить вариант</button>`:''}</div>`);
+    <p id="tp-w" class="hidden text-xs text-warn mt-2"></p>
+    <p class="text-sm text-mute mt-4 mb-1.5">${c?'Так получится для «'+esc(c.name)+'»':'Предпросмотр'}</p>
+    <div id="tp-pv" class="rounded-xl bg-bg border border-line px-4 py-3 text-sm whitespace-pre-wrap break-words max-h-48 overflow-y-auto"></div>
+    <div class="grid gap-2 mt-4"><button onclick="tplSave('${tid}','${cid}')" class="${BTN} !py-3">Сохранить</button>${tid?`<button onclick="tplDup('${tid}','${cid}')" class="min-h-[48px] rounded-2xl border border-line font-semibold">Сделать копию</button><button onclick="tplDel('${tid}','${cid}')" class="min-h-[48px] rounded-2xl border border-bad/50 text-bad font-semibold flex items-center justify-center gap-2">${ic('trash-2','w-4 h-4')}Удалить вариант</button>`:''}</div>`);
+  tpInput();
   if(!tid)setTimeout(()=>$('#tp-n')?.focus(),60);
 }
-function tagIns(k){const t=$('#tp-t');t.focus();t.setRangeText('{'+k+'}',t.selectionStart,t.selectionEnd,'end')}
-function tplSave(tid,cid){
-  const n=$('#tp-n').value.trim(),x=$('#tp-t').value.trim();
-  if(!n){$('#tp-n').focus();return}if(!x){$('#tp-t').focus();return}
-  const t=tpls().find(y=>y.id===tid);if(t){t.name=n;t.text=x}else tpls().push({id:uid(),name:n,text:x});
-  save();offerOpen(cid);
+function tpInput(){
+  const ta=$('#tp-t');if(!ta)return;
+  const x=ta.value,c=S.clients.find(y=>y.id===ta.dataset.cid),pv=$('#tp-pv'),w=$('#tp-w'),ps=$('#tp-ps');
+  ta.classList.remove('!border-bad');
+  $('#tp-c').textContent=x.length?x.length+' симв.':'';
+  const out=c&&x.trim()?offerText(c,x):'';
+  pv.textContent=out||(x.trim()?'У этого клиента нет данных для меток: все строки пустые.':'Здесь появится готовый текст.');
+  pv.classList.toggle('text-mute',!out);
+  const bad=[...new Set([...x.matchAll(/\{([^}]+)\}/g)].map(m=>m[1].trim().toLowerCase().replace(/\s+/g,'_')).filter(k=>k!=='название'&&!TAGS.includes(k)))];
+  w.classList.toggle('hidden',!bad.length);
+  w.textContent=bad.length?'Такой метки нет: '+bad.map(k=>'{'+k+'}').join(', ')+'. Она останется в тексте как есть.':'';
+  if(ps)ps.classList.toggle('hidden',!!x.trim()&&!PRESETS.some(p=>p[1]===x));
 }
-function tplDel(tid,cid){if(confirm('Удалить этот вариант?')){S.tpls=tpls().filter(x=>x.id!==tid);save();offerOpen(cid)}}
+function tplPreset(i){
+  const p=PRESETS[i],n=$('#tp-n');
+  if(!n.value.trim()||PRESETS.some(q=>q[0]===n.value))n.value=p[0];
+  n.classList.remove('!border-bad');$('#tp-t').value=p[1];tpInput();
+}
+function tagIns(k){const t=$('#tp-t');t.focus();t.setRangeText('{'+k+'}',t.selectionStart,t.selectionEnd,'end');tpInput()}
+function tplSave(tid,cid){
+  const nE=$('#tp-n'),tE=$('#tp-t'),n=nE.value.trim(),x=tE.value.trim();
+  if(!n||!x){const e=n?tE:nE;e.classList.add('!border-bad');e.focus();return}
+  const t=tpls().find(y=>y.id===tid);if(t){t.name=n;t.text=x}else tpls().push({id:uid(),name:n,text:x});
+  TPLUNDO=null;save();offerOpen(cid);
+}
+function tplDup(tid,cid){
+  const a=tpls(),i=a.findIndex(x=>x.id===tid);if(i<0)return;
+  const n={id:uid(),name:a[i].name+' (копия)',text:a[i].text};a.splice(i+1,0,n);save();tplEdit(n.id,cid);
+}
+function tplDel(tid,cid){
+  const a=tpls(),i=a.findIndex(x=>x.id===tid);if(i<0)return;
+  TPLUNDO={t:a[i],i};a.splice(i,1);save();offerOpen(cid);
+}
+function tplUndo(cid){
+  if(TPLUNDO){const a=tpls();a.splice(Math.min(TPLUNDO.i,a.length),0,TPLUNDO.t);TPLUNDO=null;save()}
+  offerOpen(cid);
+}
 
 /* ---------- Парсер: бизнесы без сайта (OpenStreetMap, прямо с телефона) ---------- */
 const LK='devhub.leads.v1',MENU_TABS=['parser','market'];
