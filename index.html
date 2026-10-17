@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Слэш</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a0a0a'/%3E%3Cpath d='M24 22 13 32l11 10M40 22l11 10-11 10M36 16 28 48' fill='none' stroke='white' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#241b30" id="tc">
 <meta name="color-scheme" content="dark light">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Слэш">
-<!-- PWA: манифест создаётся ниже. Для полноценной установки захостите файл вместе с manifest.json, иконками 192/512, apple-touch-icon и service worker. -->
-<link rel="manifest" id="mf">
+<link rel="manifest" href="manifest.json">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script>
 const c=n=>`rgb(var(--${n}) / <alpha-value>)`;
@@ -52,7 +52,7 @@ button{transition:transform .12s,background .2s,border-color .2s}button:active{t
 <script>
 const $=s=>document.querySelector(s);
 const KEY='devhub.v1';
-let S={profile:null,tasks:[],clients:[],comps:[],notes:[],draft:'',cur:'',theme:'',pal:''};
+let S={profile:null,tasks:[],clients:[],comps:[],notes:[],draft:'',cur:'',theme:'',pal:'',money:{free:30,items:[],inc:[]}};
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -61,12 +61,13 @@ const url=u=>{u=(u||'').trim();return !u?'':/^https?:\/\//i.test(u)?u:'https://'
 const ig=h=>{h=(h||'').trim();return !h?'':/^https?:/i.test(h)?h:'https://instagram.com/'+h.replace(/^@/,'')};
 const isUrl=s=>/^(https?:\/\/|www\.)/i.test((s||'').trim());
 const ICP={"bookmark": "<path d=\"m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z\"/>", "calculator": "<rect width=\"16\" height=\"20\" x=\"4\" y=\"2\" rx=\"2\"/><path d=\"M8 6h8M16 14v4M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01\"/>", "calendar-check": "<path d=\"M8 2v4M16 2v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/><path d=\"m9 16 2 2 4-4\"/>", "calendar-clock": "<path d=\"M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5\"/><path d=\"M16 2v4M8 2v4M3 10h5\"/><circle cx=\"17.5\" cy=\"17.5\" r=\"4.5\"/><path d=\"M17.5 15.5v2l1 1\"/>", "check": "<path d=\"M20 6 9 17l-5-5\"/>", "check-circle-2": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m9 12 2 2 4-4\"/>", "circle": "<circle cx=\"12\" cy=\"12\" r=\"10\"/>", "coffee": "<path d=\"M10 2v2M14 2v2M6 2v2\"/><path d=\"M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1\"/>", "coins": "<circle cx=\"8\" cy=\"8\" r=\"6\"/><path d=\"M18.09 10.37A6 6 0 1 1 10.34 18\"/><path d=\"M7 6h1v4\"/><path d=\"m16.71 13.88.7.71-2.82 2.82\"/>", "download": "<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><path d=\"m7 10 5 5 5-5\"/><path d=\"M12 15V3\"/>", "file-text": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"/><path d=\"M10 9H8M16 13H8M16 17H8\"/>", "flame": "<path d=\"M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z\"/>", "globe": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"/><path d=\"M2 12h20\"/>", "hourglass": "<path d=\"M5 22h14M5 2h14\"/><path d=\"M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22\"/><path d=\"M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2\"/>", "image": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><circle cx=\"9\" cy=\"9\" r=\"2\"/><path d=\"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\"/>", "instagram": "<rect width=\"20\" height=\"20\" x=\"2\" y=\"2\" rx=\"5\" ry=\"5\"/><path d=\"M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z\"/><path d=\"M17.5 6.5h.01\"/>", "layers": "<path d=\"m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z\"/><path d=\"m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65\"/><path d=\"m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65\"/>", "lightbulb": "<path d=\"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5\"/><path d=\"M9 18h6M10 22h4\"/>", "link": "<path d=\"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71\"/><path d=\"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71\"/>", "list-checks": "<path d=\"m3 17 2 2 4-4\"/><path d=\"m3 7 2 2 4-4\"/><path d=\"M13 6h8M13 12h8M13 18h8\"/>", "moon": "<path d=\"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z\"/>", "paperclip": "<path d=\"m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48\"/>", "pause": "<rect width=\"4\" height=\"16\" x=\"6\" y=\"4\"/><rect width=\"4\" height=\"16\" x=\"14\" y=\"4\"/>", "pencil": "<path d=\"M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z\"/><path d=\"m15 5 4 4\"/>", "play": "<polygon points=\"6 3 20 12 6 21 6 3\"/>", "plus": "<path d=\"M5 12h14M12 5v14\"/>", "rotate-ccw": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2m-7.07-17.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41\"/>", "sunrise": "<path d=\"M12 2v8\"/><path d=\"m4.93 10.93 1.41 1.41\"/><path d=\"M2 18h2M20 18h2\"/><path d=\"m19.07 10.93-1.41 1.41\"/><path d=\"M22 22H2\"/><path d=\"m8 6 4-4 4 4\"/><path d=\"M16 18a4 4 0 0 0-8 0\"/>", "target": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><circle cx=\"12\" cy=\"12\" r=\"6\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/>", "timer": "<path d=\"M10 2h4\"/><path d=\"m12 14 3-3\"/><circle cx=\"12\" cy=\"14\" r=\"8\"/>", "trash-2": "<path d=\"M3 6h18\"/><path d=\"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6\"/><path d=\"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/><path d=\"M10 11v6M14 11v6\"/>", "trending-up": "<path d=\"M22 7 13.5 15.5 8.5 10.5 2 17\"/><path d=\"M16 7h6v6\"/>", "user": "<path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/>", "users": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75\"/>", "wand-2": "<path d=\"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72\"/><path d=\"m14 7 3 3\"/><path d=\"M5 6v4M19 14v4M10 2v2M7 8H3M21 16h-4M11 3H9\"/>", "x": "<path d=\"M18 6 6 18M6 6l12 12\"/>", "zap": "<path d=\"M13 2 3 14h9l-1 8 10-12h-9l1-8z\"/>"};
+ICP.settings='<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>';
 const ic=(n,c='w-5 h-5')=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${c}" aria-hidden="true" style="flex-shrink:0">${ICP[n]||ICP.circle}</svg>`;
 const paint=()=>{};
 const pl=(n,f)=>{const m=n%100,d=n%10;return f[m>10&&m<20?2:d===1?0:d>1&&d<5?1:2]};
 const money=n=>(+n).toLocaleString('ru-RU')+(S.cur?' '+S.cur:'');
-const logo=(s=40)=>`<svg width="${s}" height="${s}" viewBox="0 0 64 64" role="img" aria-label="Слэш"><rect x=".5" y=".5" width="63" height="63" rx="16" fill="#0a0a0a" stroke="#fff" stroke-opacity=".18"/><path d="M24 22 13 32l11 10M40 22l11 10-11 10M36 16 28 48" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-try{const m={name:'Слэш',short_name:'Слэш',display:'standalone',start_url:'.',background_color:'#0a0a0a',theme_color:'#0a0a0a',icons:[{src:'data:image/svg+xml,'+encodeURIComponent(logo(512)),sizes:'512x512',type:'image/svg+xml',purpose:'any'}]};$('#mf').href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/manifest+json'}))}catch(e){}
+const logo=(s=40)=>`<span class="relative block overflow-hidden shrink-0" style="width:${s}px;height:${s}px;border-radius:24%;background:#000"><img src="icon-512.png" alt="Слэш" style="position:absolute;width:139%;max-width:none;left:-19.5%;top:-19.5%"></span>`;
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 
 /* ---------- Оформление ---------- */
 if(!S.theme)S.theme=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
@@ -285,20 +286,22 @@ function parseDue(s){
 }
 function parsePrice(s){const t=s.replace(/(\d)[ \u00a0](?=\d{3}(?!\d))/g,'$1');let m=t.match(/(\d+(?:[.,]\d+)?)\s*(?:к(?![а-яё])|тыс[а-я.]*)/i);if(m)return[Math.round(parseFloat(m[1].replace(',','.'))*1e3),m[0],t];m=t.match(/\d{3,}/);return m?[+m[0],m[0],t]:[0,'',t]}
 const SITE=/(?:https?:\/\/)?(?:www\.)?([a-z][a-z0-9-]*(?:\.[a-z]{2,})+)/i;
-const NK={task:['calendar-clock','Дедлайн'],cli:['users','Клиент'],mkt:['trending-up','Рынок'],note:['lightbulb','Мысль']};
+const NK={task:['calendar-clock','Дедлайн'],money:['coins','Деньги'],cli:['users','Клиент'],mkt:['trending-up','Рынок'],note:['lightbulb','Мысль']};
 let lastMsg='';
 function sortNote(){
   const el=$('#n-in'),lines=el.value.split(/\n|;/).map(x=>x.replace(/^[•\-*\s]+/,'').trim()).filter(Boolean);
   if(!lines.length){el.focus();return}
-  const cnt={task:0,cli:0,mkt:0,note:0},made=[];
+  const cnt={task:0,cli:0,mkt:0,note:0,money:0},made=[];
   for(const t of lines){
     const low=t.toLowerCase(),ex=S.clients.find(c=>c.name.length>2&&low.includes(c.name.toLowerCase()));
     const cm=t.match(/(?:клиент|заказчик)[а-я]*\s+[«"]?([A-Za-zА-Яа-яЁё0-9_-]{2,})/i);
-    const due=parseDue(t),[pv,tok,tt]=parsePrice(t);let k='note';
-    if(/конкурент|прайс|расценк|цена|стоит|стоимост|₽|₸|\$|руб|тенге|\d\s*тг/i.test(t)&&pv&&!due&&!/дедлайн|срок|сдать/i.test(t))k='mkt';
+    const due=parseDue(t),[pv,tok,tt]=parsePrice(t),pm=amt(t);let k='note';
+    if(!due&&pm>0&&(BARE.test(t)||(INCOME.test(t)&&!/дедлайн|срок|сдать|конкурент|прайс/i.test(t))))k='money';
+    else if(/конкурент|прайс|расценк|цена|стоит|стоимост|₽|₸|\$|руб|тенге|\d\s*тг/i.test(t)&&pv&&!due&&!/дедлайн|срок|сдать/i.test(t))k='mkt';
     else if(due||/дедлайн|срок|сдать|созвон|встреч|позвонить|напомни|отправить|доделать|успеть/i.test(t)||(/сделать|нужно|надо/i.test(t)&&!cm&&!ex))k='task';
     else if(ex||cm)k='cli';
-    if(k==='mkt'){
+    if(k==='money')addIncome(pm,t);
+    else if(k==='mkt'){
       const site=(t.match(SITE)||[])[1]||'',nm=site||(t.match(/конкурент[а-я]*\s+[«"]?([^\s,;:«»"]+)/i)||[])[1]||t.split(/\s+/)[0];
       const inc=tt.replace(tok,'').replace(SITE,'').replace(/конкурент[а-я]*|прайс|расценк[а-я]*|цена|стоит|стоимость|₽|₸|\$|руб[а-я.]*|тенге|тг/gi,'').replace(/\s+/g,' ').replace(/^[\s,;:–-]+|[\s,;:–-]+$/g,'');
       S.comps.unshift({id:uid(),name:nm,site,price:String(pv),inc});
@@ -310,13 +313,14 @@ function sortNote(){
     made.push({id:uid(),text:t,at:Date.now(),k});cnt[k]++;
   }
   S.notes.unshift(...made);S.draft='';save();
-  lastMsg='Готово: '+[['в дедлайны',cnt.task],['в клиенты',cnt.cli],['в рынок',cnt.mkt],['мыслей',cnt.note]].filter(x=>x[1]).map(x=>x.join(' ')).join(', ')+'.';
+  lastMsg='Готово: '+[['в дедлайны',cnt.task],['в клиенты',cnt.cli],['в рынок',cnt.mkt],['в деньги',cnt.money],['мыслей',cnt.note]].filter(x=>x[1]).map(x=>x.join(' ')).join(', ')+'.';
+  if(cnt.money)lastMsg+=` <button class="underline font-semibold" onclick="go('money')">Открыть «Деньги»</button>`;
   render();
 }
 function notesView(){
   return `<div class="rounded-2xl bg-card border border-line p-3 mb-4 grid gap-2">
     <textarea id="n-in" rows="5" class="${INP} resize-none" placeholder="${has('ideas')?'Запиши, пока не забыл…':'Пиши как думаешь, я разложу по разделам'}" oninput="S.draft=this.value;save()">${esc(S.draft)}</textarea>
-    <p class="text-xs text-mute">Примеры: «позвонить Ивану завтра в 15:00», «клиент Кофейня хочет лендинг», «конкурент webstudio.kz лендинг 40к». Каждая строка или «;» — отдельная запись.</p>
+    <p class="text-xs text-mute">Примеры: «позвонить Ивану завтра в 15:00», «клиент Кофейня хочет лендинг», «конкурент webstudio.kz лендинг 40к». «пришло 5000» или просто «5000» — деньги разложатся по целям. Каждая строка или «;» — отдельная запись.</p>
     <button onclick="sortNote()" class="${BTN} !py-3 flex items-center justify-center gap-2">${ic('wand-2')}Разложить по разделам</button></div>
     ${lastMsg?hint(lastMsg):''}
     <div class="grid gap-3">${S.notes.map(n=>{const[i,l]=NK[n.k]||NK.note;return `<div class="rounded-2xl bg-card border border-line p-4 flex gap-2">
@@ -324,6 +328,94 @@ function notesView(){
       <button aria-label="Удалить" onclick="delNote('${n.id}')" class="w-11 h-11 -mt-2 -mr-2 shrink-0 flex items-center justify-center text-mute">${ic('trash-2','w-4 h-4')}</button></div>`}).join('')||empty('lightbulb','Здесь появятся твои записи.')}</div>`;
 }
 function delNote(id){S.notes=S.notes.filter(n=>n.id!==id);save();render()}
+
+/* ---------- Деньги: цели со сроками и авто-распределение поступлений ---------- */
+const BARE=/^[+\s]*\d[\d\s\u00a0.,]*\s*(?:к|тыс[а-я.]*|₽|₸|\$|руб[а-я.]*|тенге|тг)?\.?$/i;
+const INCOME=/получил[аи]?|пришл[оие]|заработал[аи]?|зарплат|(?:^|\s)зп(?:\s|$)|аванс|доход|поступил[оаи]?|выплат|премия|оплатили|заплатили|перевели|\+\s*\d/i;
+const amt=s=>{const p=parsePrice(s)[0];if(p)return p;const m=String(s).replace(/[ \u00a0]/g,'').match(/\d+(?:[.,]\d+)?/);return m?Math.round(parseFloat(m[0].replace(',','.'))):0};
+const cleanDates=s=>s.replace(/\d{1,2}\.\d{1,2}(?:\.\d{2,4})?/g,' ').replace(/(?:янв|фев|мар|апр|ма[йя]|июн|июл|авг|сен|окт|ноя|дек)[а-яё]*\s+20\d\d/gi,' ');
+const savedOf=id=>S.money.inc.reduce((s,i)=>s+i.parts.reduce((a,p)=>a+(p.id===id?p.sum:0),0),0);
+const dueInfo=d=>{const n=Math.ceil((new Date(d)-Date.now())/864e5),dt=new Date(d).toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
+  return[(n<0?'просрочено · ':n===0?'сегодня · ':n===1?'завтра · ':`через ${n} ${pl(n,['день','дня','дней'])} · `)+dt,n<0?'text-bad':n<=3?'text-warn':'text-mute']};
+/* Деньги делятся так: сначала доля «свободных», остальное по целям со сроком.
+   Чем ближе срок, тем больше доля. Если у цели указана сумма, сверх недостающего ей не достанется. */
+function alloc(amount){
+  let pool=amount*(1-(S.money.free??30)/100);
+  const L=S.money.items.filter(x=>!x.done&&x.due).map(x=>{
+    const t=+x.total||0,cap=t?Math.max(0,t-savedOf(x.id)):Infinity,days=Math.max(1,(new Date(x.due)-Date.now())/864e5);
+    return{x,cap,w:1/Math.sqrt(days),sum:0}}).filter(o=>o.cap>0);
+  let open=L.slice();
+  for(let k=0;k<12&&pool>0.5&&open.length;k++){
+    const W=open.reduce((s,o)=>s+o.w,0),nx=[];let used=0;
+    for(const o of open){const g=Math.min(pool*o.w/W,o.cap-o.sum);o.sum+=g;used+=g;if(o.cap-o.sum>0.5)nx.push(o)}
+    pool-=used;open=nx;
+  }
+  const st=amount>=1000?10:1,parts=L.map(o=>({id:o.x.id,name:o.x.title,sum:Math.round(o.sum/st)*st})).filter(p=>p.sum>0);
+  let over=parts.reduce((s,p)=>s+p.sum,0)-amount;
+  while(over>0&&parts.length){const p=parts.reduce((a,b)=>b.sum>a.sum?b:a),d=Math.min(over,p.sum);p.sum-=d;over-=d}
+  return{parts:parts.filter(p=>p.sum>0),free:amount-parts.reduce((s,p)=>s+p.sum,0)};
+}
+function addIncome(a,src=''){const r=alloc(a);S.money.inc.unshift({id:uid(),amount:a,at:Date.now(),src,parts:r.parts,free:r.free})}
+function addIncomeUI(){const el=$('#m-in'),a=amt(el.value);if(!a){el.focus();return}addIncome(a,el.value.trim());save();render()}
+function delIncome(id){if(confirm('Убрать это поступление? Накопления по целям пересчитаются.')){S.money.inc=S.money.inc.filter(i=>i.id!==id);save();render()}}
+function setFree(n){S.money.free=n;save();render()}
+function addNeeds(){
+  const el=$('#nd-in'),ls=el.value.split(/\n|;/).map(x=>x.replace(/^[•\-*\s]+/,'').trim()).filter(Boolean);
+  if(!ls.length){el.focus();return}
+  for(const l of ls){
+    const due=parseDue(l),[pv,tok]=parsePrice(cleanDates(l));
+    const t=(tok?l.replace(tok,''):l).replace(/\s+/g,' ').replace(/^[\s,;:–-]+|[\s,;:–-]+$/g,'')||l;
+    S.money.items.push({id:uid(),title:t,total:pv,due:due?due.toISOString():'',why:'',done:false});
+  }
+  save();render();
+}
+function toggleNeed(id){const x=S.money.items.find(i=>i.id===id);x.done=!x.done;save();render()}
+function delNeed(id){if(confirm('Удалить цель? Уже отложенные суммы останутся в истории поступлений.')){S.money.items=S.money.items.filter(i=>i.id!==id);save();render()}}
+function editNeed(id){
+  const x=S.money.items.find(i=>i.id===id);
+  sheet('Изменить цель',[{l:'Что нужно',p:'Например, рассрочка',v:x.title},{l:'Сколько нужно всего (по желанию)',p:'15000',t:'number',v:x.total||''},{l:'Срок',p:'',t:'date',v:x.due?localInput(new Date(x.due)).slice(0,10):''},{l:'Зачем (по желанию)',p:'Куда и зачем эти деньги',t:'area',v:x.why}],
+    v=>{x.title=v[0];x.total=Math.max(0,+String(v[1]).replace(',','.'))||0;x.due=v[2]?new Date(v[2]+'T23:59:00').toISOString():'';x.why=v[3];save();render()});
+}
+function needCard(x){
+  const sv=savedOf(x.id),t=+x.total||0,pc=t?Math.min(100,Math.round(sv/t*100)):0,full=t&&sv>=t,[dt,dc]=x.due?dueInfo(x.due):['',''];
+  return `<div class="rounded-2xl bg-card border border-line p-4 flex items-start gap-3 ${x.done?'opacity-50':''}">
+    <button aria-label="${x.done?'Вернуть':'Готово, оплачено'}" onclick="toggleNeed('${x.id}')" class="mt-0.5 w-11 h-11 shrink-0 rounded-xl border ${x.done?'bg-ok border-ok text-bg':'border-line text-transparent'} flex items-center justify-center">${ic('check','w-5 h-5')}</button>
+    <div class="flex-1 min-w-0">
+      <p class="font-semibold text-[15px] break-words ${x.done?'line-through text-mute':''}">${esc(x.title)}</p>
+      ${x.why?`<p class="text-xs text-mute mt-0.5 break-words">${esc(x.why)}</p>`:''}
+      <p class="text-xs mt-1 ${x.due?dc:'text-warn'}">${x.due?dt:'Без срока: добавь срок, и я начну откладывать'}</p>
+      ${t?`<div class="h-2 rounded-full bg-card2 overflow-hidden mt-2"><div class="h-full ${full?'bg-ok':'bg-ac'}" style="width:${pc}%"></div></div><p class="mono text-xs text-mute mt-1">${money(sv)} из ${money(t)}${full?' <span class="text-ok">накоплено</span>':''}</p>`:sv?`<p class="mono text-xs text-mute mt-2">Отложено ${money(sv)}</p>`:''}
+    </div>
+    <div class="flex shrink-0 -mt-2 -mr-2"><button aria-label="Изменить" onclick="editNeed('${x.id}')" class="w-11 h-11 flex items-center justify-center text-mute">${ic('pencil','w-4 h-4')}</button><button aria-label="Удалить" onclick="delNeed('${x.id}')" class="w-11 h-11 flex items-center justify-center text-mute">${ic('trash-2','w-4 h-4')}</button></div></div>`;
+}
+function incomeCard(i){
+  const rows=[...i.parts.map(p=>[p.name,p.sum,'']),['свободные деньги',i.free,'text-ok']].filter(r=>r[1]>0);
+  return `<div class="rounded-2xl bg-card border border-line p-4">
+    <div class="flex items-start justify-between gap-2"><div><p class="mono text-xl font-bold">+${money(i.amount)}</p><p class="text-xs text-mute">${new Date(i.at).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</p></div>
+    <button aria-label="Убрать поступление" onclick="delIncome('${i.id}')" class="w-11 h-11 -mt-2 -mr-2 shrink-0 flex items-center justify-center text-mute">${ic('trash-2','w-4 h-4')}</button></div>
+    <div class="grid gap-2 mt-3 pt-3 border-t border-line">${rows.map(([n,v,c])=>`<div class="flex items-baseline justify-between gap-3 text-[15px]"><span class="min-w-0 break-words ${c}">${esc(n)}</span><span class="mono font-bold whitespace-nowrap ${c}">${money(v)}</span></div>`).join('')}</div></div>`;
+}
+function moneyView(){
+  const m=S.money,tot=m.inc.reduce((s,i)=>s+i.amount,0),fr=m.inc.reduce((s,i)=>s+i.free,0);
+  const open=m.items.filter(x=>!x.done).sort((a,b)=>(a.due?new Date(a.due):8e15)-(b.due?new Date(b.due):8e15)),done=m.items.filter(x=>x.done);
+  const tile=(l,v,c='text-fg')=>`<div class="rounded-2xl bg-card border border-line p-3"><p class="mono text-base font-bold ${c} break-words">${money(v)}</p><p class="text-xs text-mute">${l}</p></div>`;
+  const hasDue=open.some(x=>x.due);
+  return `<div class="grid grid-cols-3 gap-2 mb-4">${tile('Поступило',tot)}${tile('На цели',tot-fr,'text-act')}${tile('Свободные',fr,'text-ok')}</div>
+    <div class="rounded-2xl bg-card border border-line p-3 mb-4 grid gap-2">
+      <div class="flex gap-2"><input id="m-in" inputmode="decimal" class="${INP}" placeholder="Сколько пришло? 5000 или 5к" onkeydown="if(event.key==='Enter')addIncomeUI()"><button aria-label="Распределить" onclick="addIncomeUI()" class="w-14 shrink-0 rounded-xl bg-ac text-acfg flex items-center justify-center">${ic('wand-2')}</button></div>
+      <p class="text-xs text-mute">Или запиши сумму в быстрых заметках. Деньги делятся между целями со сроком: чем ближе срок, тем больше доля.</p>
+      <p class="text-xs text-mute mt-1">Доля свободных денег с каждого поступления</p>
+      <div class="grid grid-cols-5 gap-2">${[0,20,30,40,50].map(n=>`<button onclick="setFree(${n})" class="min-h-[44px] rounded-xl border text-sm ${(m.free??30)===n?'bg-ac/15 border-ac text-act':'bg-bg border-line text-fg'}">${n}%</button>`).join('')}</div></div>
+    ${m.inc.length&&!hasDue?hint('Целей со сроком пока нет, поэтому всё уходит в свободные. Добавь цель ниже, например «рассрочка до 30 октября».'):''}
+    ${m.inc.length?`<p class="text-sm text-mute mb-2">Куда пошли деньги</p><div class="grid gap-3 mb-6">${m.inc.slice(0,8).map(incomeCard).join('')}</div>`:''}
+    <p class="text-sm text-mute mb-2">Что мне надо по деньгам</p>
+    <div class="rounded-2xl bg-card border border-line p-3 mb-3 grid gap-2">
+      <textarea id="nd-in" rows="3" class="${INP} resize-none" placeholder="рассрочка до 30 октября 15000&#10;подарок девушке до 14 декабря"></textarea>
+      <p class="text-xs text-mute">Что, сумма (по желанию) и срок. Каждая строка или «;» — отдельная цель. Без срока деньги на цель не откладываются.</p>
+      <button onclick="addNeeds()" class="${BTN} !py-3 flex items-center justify-center gap-2">${ic('plus')}Добавить цели</button></div>
+    <div class="grid gap-3">${open.map(needCard).join('')||empty('coins','Впиши, на что нужны деньги, и я буду раскладывать каждое поступление.')}</div>
+    ${done.length?`<p class="text-sm text-mute mt-6 mb-2">Закрытые</p><div class="grid gap-3">${done.map(needCard).join('')}</div>`:''}`;
+}
 
 /* ---------- Окна ---------- */
 function modal(title,body){
@@ -351,19 +443,19 @@ function focusUpd(){const e=$('#fc');if(e){e.innerHTML=focusInner();paint()}}
 function focusGo(){F.on=!F.on;if(F.on)F.end=Date.now()+F.left*1000;focusUpd()}
 function focusReset(){F={left:1500,on:false};focusUpd()}
 
-/* ---------- Профиль ---------- */
-function meView(){
+/* ---------- Настройки (шестерёнка в шапке) ---------- */
+function openSettings(){
   const st=[['Выполнено',S.tasks.filter(t=>t.done).length,'check-circle-2'],['Клиентов',S.clients.length,'users'],['Записей',S.notes.length,'lightbulb']];
-  return `<div class="rounded-2xl bg-card border border-line p-4 mb-3 flex items-center gap-3">${logo(48)}<div><p class="font-bold text-lg">${esc(S.profile.name)}</p><p class="text-sm text-mute">Слэш, хаб веб-разработчика</p></div></div>
-    <div class="grid grid-cols-3 gap-2 mb-3">${st.map(([l,v,i])=>`<div class="rounded-2xl bg-card border border-line p-3">${ic(i,'w-4 h-4 text-act mb-1')}<p class="mono text-xl font-bold">${v}</p><p class="text-xs text-mute">${l}</p></div>`).join('')}</div>
-    <div class="rounded-2xl bg-card border border-line p-4"><div id="lk">${look()}</div>
+  modal('Настройки',`<div class="rounded-2xl bg-bg border border-line p-3 mb-3 flex items-center gap-3">${logo(44)}<div class="min-w-0"><p class="font-bold truncate">${esc(S.profile.name)}</p><p class="text-xs text-mute">Слэш, хаб веб-разработчика</p></div></div>
+    <div class="grid grid-cols-3 gap-2 mb-5">${st.map(([l,v,i])=>`<div class="rounded-2xl bg-bg border border-line p-3">${ic(i,'w-4 h-4 text-act mb-1')}<p class="mono text-xl font-bold">${v}</p><p class="text-xs text-mute">${l}</p></div>`).join('')}</div>
+    <div id="lk">${look()}</div>
     <label class="text-sm text-mute block mt-5">Знак валюты для цен</label>
-    <input class="${INP} mt-1" placeholder="например, ₽, ₸, $" value="${esc(S.cur)}" oninput="S.cur=this.value;save()">
-    <button onclick="resetApp()" class="mt-5 w-full min-h-[48px] rounded-2xl border border-bad/50 text-bad font-semibold flex items-center justify-center gap-2">${ic('trash-2','w-4 h-4')}Стереть все данные</button></div>`;
+    <input class="${INP} mt-1" placeholder="например, ₽, ₸, $" value="${esc(S.cur)}" oninput="S.cur=this.value;save()" onchange="render()">
+    <button onclick="resetApp()" class="mt-5 w-full min-h-[48px] rounded-2xl border border-bad/50 text-bad font-semibold flex items-center justify-center gap-2">${ic('trash-2','w-4 h-4')}Стереть все данные</button>`);
 }
 
 /* ---------- Оболочка и навигация ---------- */
-const NAV=[['tasks','target','Фокус'],['clients','users','Клиенты'],null,['market','trending-up','Рынок'],['me','user','Профиль']];
+const NAV=[['tasks','target','Фокус'],['clients','users','Клиенты'],null,['market','trending-up','Рынок'],['money','coins','Деньги']];
 function go(k){tab=k;lastMsg='';render();$('#main').scrollTop=0;if(k==='notes')setTimeout(()=>$('#n-in')?.focus(),50)}
 function nav(){
   return `<nav class="relative mx-3 mb-3 mt-1 h-16 shrink-0 rounded-[28px] bg-card shadow-[0_12px_32px_-14px_rgb(0_0_0/.55)] grid grid-cols-5 items-center">
@@ -373,13 +465,14 @@ function nav(){
 }
 function shell(){
   const h=new Date().getHours(),g=h<5?'Доброй ночи':h<12?'Доброе утро':h<18?'Добрый день':'Добрый вечер';
-  const titles={tasks:'Фокус',clients:'Клиенты и файлы',market:'Рынок и цены',notes:'Быстрые заметки',me:'Профиль'};
-  const view={tasks:tasksView,clients:clientsView,market:marketView,notes:notesView,me:meView}[tab]();
+  const titles={tasks:'Фокус',clients:'Клиенты и файлы',market:'Рынок и цены',money:'Деньги',notes:'Быстрые заметки'};
+  const view={tasks:tasksView,clients:clientsView,market:marketView,money:moneyView,notes:notesView}[tab]();
   return `<div class="h-full max-w-md mx-auto flex flex-col bg-bg text-fg md:border-x md:border-line">
-    <header class="px-5 pt-5 pb-3 flex items-center gap-3">${logo(40)}<div class="min-w-0"><p class="text-sm text-mute truncate">${g}, ${esc(S.profile.name)}</p><h1 class="text-2xl font-extrabold leading-tight">${titles[tab]}</h1></div></header>
+    <header class="px-5 pt-5 pb-3 flex items-center gap-3">${logo(40)}<div class="min-w-0 flex-1"><p class="text-sm text-mute truncate">${g}, ${esc(S.profile.name)}</p><h1 class="text-2xl font-extrabold leading-tight truncate">${titles[tab]}</h1></div>
+    <button aria-label="Настройки" onclick="openSettings()" class="w-11 h-11 shrink-0 rounded-xl bg-card border border-line text-mute flex items-center justify-center">${ic('settings','w-5 h-5')}</button></header>
     <main id="main" class="flex-1 overflow-y-auto ns px-4 pb-12">${view}</main>${nav()}</div>`;
 }
-function resetApp(){if(confirm('Стереть все данные и пройти настройку заново?')){const{theme,pal,cur}=S;S={profile:null,tasks:[],clients:[],comps:[],notes:[],draft:'',cur,theme,pal};draft={name:'',peak:'',style:'',traits:[]};step=0;tab='tasks';dbx('clear');save();render()}}
+function resetApp(){if(confirm('Стереть все данные и пройти настройку заново?')){const{theme,pal,cur}=S;S={profile:null,tasks:[],clients:[],comps:[],notes:[],draft:'',cur,theme,pal,money:{free:30,items:[],inc:[]}};$('#sheet')?.remove();draft={name:'',peak:'',style:'',traits:[]};step=0;tab='tasks';dbx('clear');save();render()}}
 function render(){const sc=$('#main')?.scrollTop||0;$('#app').innerHTML=S.profile?shell():onboarding();paint();hydrate();if($('#main'))$('#main').scrollTop=sc}
 
 setInterval(()=>{
